@@ -5,9 +5,9 @@ import Editmenu from "@/components/Editmenu";
 import Searchmenu from "@/components/Searchmenu";
 import Resetbutton from "@/components/Resetbutton";
 import Datecomponents from "@/components/Datecomponents";
+import Button2components from "@/components/Button2components";
 import "@/styles/Frame72327.css";
 
-// 👇 이 6줄을 복사해서 여기에 딱 붙여넣어 주세요! 👇
 declare global {
     interface Window {
         gapi: any;
@@ -137,10 +137,10 @@ const Frame72327 = () => {
         const prevEnd = new Date(year, month, 0).getDate();
         const currEnd = new Date(year, month + 1, 0).getDate();
 
-        for (let i = startDay - 1; i >= 0; i--) grid.push({ date: new Date(year, month - 1, prevEnd - i), isCurr: false });
-        for (let i = 1; i <= currEnd; i++) grid.push({ date: new Date(year, month, i), isCurr: true });
+        for (let i = startDay - 1; i >= 0; i--) grid.push({ date: new Date(year, month - 1, prevEnd - i), isCurrentMonth: false });
+        for (let i = 1; i <= currEnd; i++) grid.push({ date: new Date(year, month, i), isCurrentMonth: true });
         let nextDay = 1;
-        while (grid.length < 42) grid.push({ date: new Date(year, month + 1, nextDay++), isCurr: false });
+        while (grid.length < 42) grid.push({ date: new Date(year, month + 1, nextDay++), isCurrentMonth: false });
         return grid;
     };
 
@@ -206,32 +206,37 @@ const Frame72327 = () => {
                             </div>
                         </div>
 
-                        {/* 메뉴 툴바 */}
+                        {/* 메뉴 툴바 (임의의 wrapper div를 삭제하여 순정 상태 정렬 복원) */}
                         <div id="52_30" className="Pixso-frame-52_30" style={{ position: 'relative', zIndex: 10 }}>
                             <div className="frame-content-52_30">
                                 
-                                <div onClick={() => setRegionMenuOpen(prev => prev === "True" ? "False" : "True")} style={{cursor:"pointer", position:"relative"}}>
-                                    <Regionmenu id="52_20" className="Pixso-instance-52_20" regionmenu={regionMenuOpen} slot_97_144={<Button1components button1state="default" slot_45_10={<p style={{fontFamily:"Retro Gaming, monospace", fontSize:"15px", margin:0}}>{selectedRegion}</p>}/>} />
-                                    {regionMenuOpen === "True" && (
-                                        <div style={{ position: "absolute", top: "30px", left: "0", display:"flex", flexDirection:"column", background:"#ddd", border:"2px solid #000", padding:"4px", gap:"4px" }}>
-                                            {["KR", "JP", "US"].map(reg => (
-                                                <div key={reg} onClick={(e) => { e.stopPropagation(); setSelectedRegion(reg); setRegionMenuOpen("False"); }} style={{cursor:"pointer", padding:"2px 8px", fontFamily:"Retro Gaming, monospace", fontSize:"14px", borderBottom:"1px solid #000"}}>{reg}</div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
+                                <Regionmenu 
+                                    id="52_20" 
+                                    className="Pixso-instance-52_20" 
+                                    regionmenu={regionMenuOpen} 
+                                    click={() => setRegionMenuOpen(prev => prev === "True" ? "False" : "True")} 
+                                    slot_97_144={<Button1components button1state="default" slot_45_10={<p style={{fontFamily:"Retro Gaming, monospace", fontSize:"15px", margin:0}}>{selectedRegion}</p>}/>}
+                                    slot_97_159={<Button1components button1state="checked" slot_45_10={<p style={{fontFamily:"Retro Gaming, monospace", fontSize:"15px", margin:0}}>{selectedRegion}</p>}/>}
+                                    slot_97_161={<Button2components button2state="default" click={() => { setSelectedRegion("KR"); setRegionMenuOpen("False"); }} slot_77_120={<p id="77_120" className="Pixso-paragraph-77_120">{"KOREA"}</p>} />}
+                                    slot_97_162={<Button2components button2state="default" click={() => { setSelectedRegion("JP"); setRegionMenuOpen("False"); }} slot_77_120={<p id="77_120" className="Pixso-paragraph-77_120">{"JAPAN"}</p>} />}
+                                    slot_97_163={<Button2components button2state="default" click={() => { setSelectedRegion("US"); setRegionMenuOpen("False"); }} slot_77_120={<p id="77_120" className="Pixso-paragraph-77_120">{"AMERICA"}</p>} />}
+                                />
 
                                 <Editmenu id="52_23" className="Pixso-instance-52_23" editmenu="False" />
                                 
-                                {/* 검색 버튼 -> 검색 모달 오픈 */}
-                                <div onClick={() => setSearchModalOpen(true)} style={{cursor:"pointer"}}>
-                                    <Searchmenu id="52_26" className="Pixso-instance-52_26" searchmenu="False" />
-                                </div>
+                                <Searchmenu 
+                                    id="52_26" 
+                                    className="Pixso-instance-52_26" 
+                                    searchmenu="False" 
+                                    click={() => setSearchModalOpen(true)} 
+                                />
                                 
-                                {/* 리셋 버튼 -> 이번달, 한국 리셋 */}
-                                <div onClick={() => { setCurrentDate(new Date()); setSelectedRegion("KR"); setSearchQuery(""); }} style={{cursor:"pointer"}}>
-                                    <Resetbutton id="52_28" className="Pixso-instance-52_28" resetmenu="default" />
-                                </div>
+                                <Resetbutton 
+                                    id="52_28" 
+                                    className="Pixso-instance-52_28" 
+                                    resetmenu="default" 
+                                    click={() => { setCurrentDate(new Date()); setSelectedRegion("KR"); setSearchQuery(""); }} 
+                                />
 
                             </div>
                         </div>
@@ -332,7 +337,7 @@ const Frame72327 = () => {
                         </div>
                     )}
 
-                    {/* 기능 B: 일정 검색 전용 팝업 (아이디어 B 채택) */}
+                    {/* 기능 B: 일정 검색 전용 팝업 */}
                     {searchModalOpen && (
                         <div style={{ backgroundColor: "#ddd", border: "4px solid #000", padding: "16px", width: "350px", fontFamily: "Retro Gaming, DungGeunMo, monospace", boxShadow: "8px 8px 0px rgba(0,0,0,0.8)" }}>
                             <div style={{ backgroundColor: "#000", color: "#fff", padding: "4px 8px", marginBottom: "12px", display: "flex", justifyContent: "space-between" }}>
