@@ -7,6 +7,14 @@ import Resetbutton from "@/components/Resetbutton";
 import Datecomponents from "@/components/Datecomponents";
 import "@/styles/Frame72327.css";
 
+// 👇 이 6줄을 복사해서 여기에 딱 붙여넣어 주세요! 👇
+declare global {
+    interface Window {
+        gapi: any;
+        google: any;
+    }
+}
+
 const CLIENT_ID = "930243544712-7j81q7c4d7885v43u1nqlmgbdtf85oat.apps.googleusercontent.com";
 const SCOPES = "https://www.googleapis.com/auth/calendar";
 
