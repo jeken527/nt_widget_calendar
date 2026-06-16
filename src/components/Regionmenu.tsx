@@ -4,6 +4,7 @@ import { withStopPropagation } from "@/utils/utils";
 import { motion, AnimatePresence } from "motion/react";
 import Button2components from "@/components/Button2components";
 import "@/styles/Regionmenu.css";
+
 interface RegionmenuProps {
     regionmenu?: string;
     id?: string;
@@ -16,6 +17,7 @@ interface RegionmenuProps {
     slot_97_162?: React.ReactNode;
     slot_97_163?: React.ReactNode;
 }
+
 const Regionmenu = (props: RegionmenuProps) => {
     const {
         regionmenu,
@@ -38,7 +40,9 @@ const Regionmenu = (props: RegionmenuProps) => {
     const [transitionConfig97_162, setTransitionConfig97_162] = useState({});
     const [button2state_97_163, setButton2state_97_163] = useState("default");
     const [transitionConfig97_163, setTransitionConfig97_163] = useState({});
-    const transitionConfig: any = {
+
+    // 👇 에러가 나던 이 부분의 변수 이름을 localTransitionConfig로 변경했습니다.
+    const localTransitionConfig: any = {
         "97:163_77:125_mo": {
             transition: { duration: 0, ease: [0.215, 0.61, 0.355, 1] }
         }
@@ -180,4 +184,5 @@ const Regionmenu = (props: RegionmenuProps) => {
         </div>
     );
 };
+
 export default Regionmenu;
