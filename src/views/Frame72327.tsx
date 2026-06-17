@@ -563,4 +563,28 @@ const Frame72327 = () => {
                                     </div>
 
                                     <div style={{ marginTop: "10px", minHeight: "100px", maxHeight: "150px", overflowY: "auto", backgroundColor: "#fff", border: "2px solid", borderTopColor: "#888", borderLeftColor: "#888", borderBottomColor: "#fff", borderRightColor: "#fff", padding: "8px", fontFamily: "DungGeunMo, monospace", fontSize: "12px", boxSizing: "border-box" }}>
-                                        {searchQuery.trim() === "" ?
+                                        {searchQuery.trim() === "" ? (
+                                            <span style={{ color: "#888" }}>Waiting for input...</span>
+                                        ) : searchResults.length === 0 ? (
+                                            <span style={{ color: "red" }}>NO DATA FOUND.</span>
+                                        ) : (
+                                            searchResults.map((e, i) => (
+                                                <div key={i} style={{ margin: "4px 0", borderBottom: "1px dashed #ccc", paddingBottom: "4px", cursor: "pointer" }}>
+                                                    <span style={{ color: "blue", marginRight: "6px" }}>[{e.start?.date || e.start?.dateTime?.split("T")[0]}]</span>
+                                                    {e.summary}
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div className="stroke-120_147"></div>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+export default Frame72327;
