@@ -1,4 +1,6 @@
-/* 1. 영문/숫자용 Retro Gaming 폰트 불러오기 */
+/* ==========================================
+   1. 폰트 세팅 (Retro Gaming + 둥근모꼴)
+   ========================================== */
 @font-face {
     font-family: 'Retro Gaming';
     src: url('./Retro%20Gaming.ttf') format('truetype');
@@ -6,7 +8,6 @@
     font-style: normal;
 }
 
-/* 2. 한글용 둥근모꼴 폰트 불러오기 */
 @font-face {
     font-family: 'DungGeunMo';
     src: url('./DungGeunMo.ttf') format('truetype');
@@ -14,12 +15,14 @@
     font-style: normal;
 }
 
-/* 3. 영어가 먼저, 한글은 둥근모꼴로 자동 혼합 적용 */
+/* 영어가 먼저, 한글은 둥근모꼴로 자동 혼합 적용 */
 .scroll-container * {
     font-family: 'Retro Gaming', 'DungGeunMo', monospace !important;
 }
 
-/* 4. 위젯 전체 껍데기 사이즈 강제 고정 (피그마 W 515, H 366) */
+/* ==========================================
+   2. 위젯 전체 껍데기 사이즈 강제 고정 (피그마 W 515, H 366)
+   ========================================== */
 .scroll-container {
     width: 515px !important;
     height: 366px !important;
@@ -27,7 +30,6 @@
     position: relative;
 }
 
-/* 5. 메인 프레임 뼈대 고정 */
 .stroke-wrapper-72_327 {
     position: relative;
     width: 515px !important;
@@ -51,7 +53,7 @@
     mix-blend-mode: normal;
 }
 
-/* 6. 피그마 설정값 완벽 반영: 패딩(L:7, T:5, R:3, B:8) 및 간격 2.5px */
+/* 피그마 설정값 완벽 반영: 패딩(L:7, T:5, R:3, B:8) 및 간격 2.5px */
 .frame-content-72_327 {
     display: flex;
     flex-direction: column;
@@ -65,7 +67,52 @@
     box-sizing: border-box; /* 패딩이 515px 밖으로 튀어나가지 않게 방어 */
 }
 
-/* --- 아래에 있는 .stroke-72_327 부터는 기존 코드 그대로 두시면 됩니다! --- */
+/* ==========================================
+   3. 위젯 내부 메뉴 & 버튼 사이즈 영구 고정
+   ========================================== */
+
+/* 메뉴 4개를 감싸는 오토레이아웃 상자 (W324, H28, 패딩 위아래 1, 간격 4) */
+.Pixso-frame-52_30 {
+    width: 324px !important;
+    height: 28px !important;
+    margin: 0 auto !important; /* 가운데 정렬 */
+}
+.frame-content-52_30 {
+    display: flex !important;
+    flex-direction: row !important;
+    padding: 1px 0px !important; /* 위아래 1px, 양옆 0px */
+    gap: 4px !important;         /* 버튼 사이 간격 4px */
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+/* 개별 메뉴 버튼 4개 강제 고정 (W78, H25) + 멋대로 늘어나는 설정 파괴 */
+.Pixso-instance-52_20, .Pixso-instance-52_23, 
+.Pixso-instance-52_26, .Pixso-instance-52_28,
+[class*="Pixso-instance-2_188"], [class*="Pixso-instance-2_170"], 
+[class*="Pixso-instance-2_176"], [class*="Pixso-instance-2_186"] {
+    width: 78px !important;
+    height: 25px !important;
+    position: relative !important; /* 억지로 좌표에 고정시킨 설정 해제 */
+    left: auto !important;
+    top: auto !important;
+    flex-shrink: 0 !important; /* 줄어들지 않음 */
+    flex-grow: 0 !important;   /* 늘어나지 않음 */
+}
+
+/* 달력 월 이동 버튼 <, > 강제 고정 (W22, H22) */
+.Pixso-instance-58_13, 
+.Pixso-instance-129_172 {
+    width: 22px !important;
+    height: 22px !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+}
+
+/* -----------------------------------------------------
+   여기부터는 원래 있던 코드가 이어집니다! 
+   .stroke-72_327 { ... }
+   ----------------------------------------------------- */
 .stroke-72_327 {
         position: absolute;
 inset: 0px;
