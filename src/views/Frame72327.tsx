@@ -471,4 +471,140 @@ const Frame72327 = () => {
                                             <div id="125_162" className="stroke-wrapper-125_162">
                                                 <div className="Pixso-frame-125_162" style={{ position: "relative", padding: 0 }}>
                                                     <div className="shadow-blend-unknown-0"></div>
-                                                    <input type="text" value={eventEndDate} onChange={(e) => setEventEndDate(e.target.value)} style={{ position: "absolute", inset: 0
+                                                    <input type="text" value={eventEndDate} onChange={(e) => setEventEndDate(e.target.value)} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", background: "transparent", border: "none", outline: "none", textAlign: "center", fontFamily: "inherit", fontSize: "12px" }} />
+                                                </div>
+                                                <div className="stroke-125_162"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="107_423" className="Pixso-frame-107_423">
+                                        <div className="frame-content-107_423"><p id="107_421" className="Pixso-paragraph-107_421">{"Memo"}</p></div>
+                                    </div>
+                                    <div id="139_135" className="Pixso-frame-139_135">
+                                        <div id="107_413" className="stroke-wrapper-107_413">
+                                            <div className="Pixso-rectangle-107_413" style={{ position: "relative" }}>
+                                                <div className="shadow-blend-unknown-0"></div>
+                                                <textarea value={eventMemo} onChange={(e) => setEventMemo(e.target.value)} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", background: "transparent", border: "none", outline: "none", padding: "8px", fontFamily: "inherit", resize: "none" }} />
+                                            </div>
+                                            <div className="stroke-107_413"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="stroke-107_433"></div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* ---------------------------------------------------- */}
+            {/* 🎯 모달 2: 일정 확인/삭제 모달창 (Frame120147 원본 100% 복구) 🎯 */}
+            {/* ---------------------------------------------------- */}
+            {viewModalData.isOpen && (
+                <div 
+                    style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "rgba(0,0,0,0.6)", zIndex: 99999, display: "flex", justifyContent: "center", alignItems: "center" }}
+                    onClick={() => setViewModalData({ isOpen: false, title: "", isHoliday: false })} 
+                >
+                    <div style={{ width: "250px" }} onClick={(e) => e.stopPropagation()}>
+                        <div id="120_147" className="stroke-wrapper-120_147">
+                            <div className="Pixso-frame-120_147">
+                                <div className="frame-content-120_147">
+                                    <div id="119_132" className="Pixso-frame-119_132">
+                                        <div className="frame-content-119_132">
+                                            <div id="139_127" className="Pixso-frame-139_127">
+                                                <div className="frame-content-139_127">
+                                                    <p id="139_128" className="Pixso-paragraph-139_128">{"SCHEDULE"}</p>
+                                                </div>
+                                            </div>
+                                            <div className="hover-target" onClick={() => setViewModalData({ isOpen: false, title: "", isHoliday: false })}>
+                                                <Button3components id="135_159" className="Pixso-instance-135_159" button3state="default" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="120_138" className="Pixso-frame-120_138">
+                                        <div className="frame-content-120_138">
+                                            <div id="119_136" className="Pixso-frame-119_136">
+                                                <div className="frame-content-119_136">
+                                                    <p id="119_133" className="Pixso-paragraph-119_133">{viewModalData.title}</p>
+                                                </div>
+                                            </div>
+                                            <div id="120_137" className="Pixso-frame-120_137">
+                                                <div className="frame-content-120_137">
+                                                    <p id="119_134" className="Pixso-paragraph-119_134">{viewModalData.isHoliday ? "공휴일" : "내 일정"}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {!viewModalData.isHoliday && (
+                                        <div className="hover-target" onClick={() => { if (viewModalData.eventId) handleDeleteEvent(viewModalData.eventId); }} style={{ display: "contents" }}>
+                                            <Button1components id="120_141" className="Pixso-instance-120_141" button1state="default" slot_45_10={<p id="14_14" className="Pixso-paragraph-14_14" style={{pointerEvents:"none"}}>{"DELETE"}</p>} />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="stroke-120_147"></div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* ---------------------------------------------------- */}
+            {/* 🎯 모달 3: SEARCH 모달창 (Frame120147 헤더 활용) 🎯 */}
+            {/* ---------------------------------------------------- */}
+            {isSearchModalOpen && (
+                <div 
+                    style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "rgba(0,0,0,0.6)", zIndex: 99999, display: "flex", justifyContent: "center", alignItems: "center" }}
+                    onClick={() => setIsSearchModalOpen(false)} 
+                >
+                    <div style={{ width: "250px" }} onClick={(e) => e.stopPropagation()}>
+                        <div className="stroke-wrapper-120_147">
+                            <div className="Pixso-frame-120_147">
+                                <div className="frame-content-120_147">
+                                    
+                                    <div id="119_132" className="Pixso-frame-119_132">
+                                        <div className="frame-content-119_132">
+                                            <div id="139_127" className="Pixso-frame-139_127">
+                                                <div className="frame-content-139_127">
+                                                    <p id="139_128" className="Pixso-paragraph-139_128">{"SEARCH"}</p>
+                                                </div>
+                                            </div>
+                                            <div className="hover-target" onClick={() => setIsSearchModalOpen(false)}>
+                                                <Button3components id="135_159" className="Pixso-instance-135_159" button3state="default" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style={{ width: "100%", padding: "0 10px", boxSizing: "border-box" }}>
+                                        <div style={{ border: "2px solid", borderTopColor: "#888", borderLeftColor: "#888", borderBottomColor: "#fff", borderRightColor: "#fff", backgroundColor: "#fff" }}>
+                                            <input 
+                                                autoFocus type="text" placeholder="KEYWORD..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} 
+                                                style={{ width: "100%", padding: "6px", border: "none", outline: "none", fontFamily: "Retro Gaming, DungGeunMo, monospace", fontSize: "12px", boxSizing: "border-box" }} 
+                                            />
+                                        </div>
+                                        <div style={{ marginTop: "10px", minHeight: "100px", maxHeight: "150px", overflowY: "auto", backgroundColor: "#fff", border: "2px solid", borderTopColor: "#888", borderLeftColor: "#888", borderBottomColor: "#fff", borderRightColor: "#fff", padding: "8px", fontFamily: "DungGeunMo, monospace", fontSize: "12px", boxSizing: "border-box" }}>
+                                            {searchQuery.trim() === "" ? (
+                                                <span style={{ color: "#888" }}>Waiting for input...</span>
+                                            ) : searchResults.length === 0 ? (
+                                                <span style={{ color: "red" }}>NO DATA FOUND.</span>
+                                            ) : (
+                                                searchResults.map((e, i) => (
+                                                    <div key={i} style={{ margin: "4px 0", borderBottom: "1px dashed #ccc", paddingBottom: "4px", cursor: "pointer" }}>
+                                                        <span style={{ color: "blue", marginRight: "6px" }}>[{e.start?.date || e.start?.dateTime?.split("T")[0]}]</span>
+                                                        {e.summary}
+                                                    </div>
+                                                ))
+                                            )}
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div className="stroke-120_147"></div>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+export default Frame72327;
