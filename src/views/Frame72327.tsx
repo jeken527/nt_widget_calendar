@@ -22,6 +22,7 @@ declare global {
     }
 }
 
+// 🔑 발급받으신 클라이언트 ID를 그대로 유지했습니다!
 const CLIENT_ID = "930243544712-7j81q7c4d7885v43u1nqlmgbdtf85oat.apps.googleusercontent.com";
 const SCOPES = "https://www.googleapis.com/auth/calendar";
 
@@ -42,13 +43,16 @@ const Frame72327 = () => {
     // ----------------------------------------------------
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedRegion, setSelectedRegion] = useState("KR");
-    const [myCalendarId, setMyCalendarId] = useState("primary"); // "정경" 캘린더 ID 저장용
+    const [myCalendarId, setMyCalendarId] = useState("primary"); // 🎯 "정경" 캘린더 ID 저장
     const [holidays, setHolidays] = useState<any[]>([]);
     const [events, setEvents] = useState<any[]>([]); 
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const tokenClientRef = useRef<any>(null);
 
-    // 팝업창 상태 관리
+    // 날짜 호버 상태 완벽 복원
+    const [hoveredDateStr, setHoveredDateStr] = useState<string | null>(null);
+
+    // 모달창 1, 2, 3 상태
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [eventTitle, setEventTitle] = useState("");
     const [eventStartDate, setEventStartDate] = useState("");
@@ -56,13 +60,13 @@ const Frame72327 = () => {
     const [eventMemo, setEventMemo] = useState("");
 
     const [viewModalData, setViewModalData] = useState<{ isOpen: boolean; eventId?: string; title: string; isHoliday: boolean }>({ isOpen: false, title: "", isHoliday: false });
+    
     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
-    const searchResults = searchQuery.trim() ? events.filter(e => e.summary?.toLowerCase().includes(searchQuery.toLowerCase())) : [];
+    // 🎯 백지 에러 해결: e.summary가 비어있을 때를 대비한 안전 장치 (e.summary || "") 추가
+    const searchResults = searchQuery.trim() ? events.filter(e => (e.summary || "").toLowerCase().includes(searchQuery.toLowerCase())) : [];
 
-    // ----------------------------------------------------
-    // 시간대(Timezone) 버그 해결: 무조건 한국 로컬 YYYY-MM-DD 변환
-    // ----------------------------------------------------
+    // 🎯 시간대 버그 해결: 무조건 한국 로컬 시간 추출 (17일이 18일로 밀리는 현상 방지)
     const getLocalDateStr = (d: Date) => {
         const year = d.getFullYear();
         const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -114,25 +118,23 @@ const Frame72327 = () => {
         if (isAuthenticated) fetchCalendarData();
     }, [isAuthenticated, currentDate, selectedRegion]);
 
-    // 🎯 "정경" 달력 추적 및 실시간 데이터 패치
     const fetchCalendarData = async () => {
         try {
-            // 1. 내 캘린더 목록을 뒤져서 "정경" 달력의 진짜 ID 찾기
+            // 🎯 내 구글 캘린더 목록을 뒤져서 "정경" 달력을 찾아 ID를 덮어씌움!
             const calListResp = await window.gapi.client.calendar.calendarList.list();
             const targetCal = calListResp.result.items?.find((c: any) => c.summary === "정경");
-            const targetId = targetCal ? targetCal.id : "primary"; // "정경"이 없으면 기본 달력 사용
+            const targetId = targetCal ? targetCal.id : "primary";
             setMyCalendarId(targetId);
 
             const timeMin = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString();
             const timeMax = new Date(currentDate.getFullYear(), currentDate.getMonth() + 4, 0).toISOString();
             
-            // 공휴일 불러오기
             const holidayResp = await window.gapi.client.calendar.events.list({
                 calendarId: HOLIDAY_CALENDARS[selectedRegion], timeMin, timeMax, singleEvents: true,
             });
             setHolidays(holidayResp.result.items || []);
 
-            // 2. "정경" 달력에서 내 일정 불러오기
+            // 찾은 "정경" 달력 ID로 내 일정을 가져옴
             const eventsResp = await window.gapi.client.calendar.events.list({
                 calendarId: targetId, timeMin, timeMax, singleEvents: true, orderBy: "startTime"
             });
@@ -144,10 +146,10 @@ const Frame72327 = () => {
 
     const handleLogin = () => tokenClientRef.current?.requestAccessToken({ prompt: "consent" });
 
-    // 🎯 일정 저장 시 "정경" 달력에 저장
     const handleSaveEvent = async () => {
         if (!eventTitle.trim() || !eventStartDate) return;
         try {
+            // "정경" 달력에 일정 저장
             await window.gapi.client.calendar.events.insert({
                 calendarId: myCalendarId,
                 resource: { summary: eventTitle, description: eventMemo, start: { date: eventStartDate }, end: { date: eventEndDate || eventStartDate } }
@@ -158,10 +160,10 @@ const Frame72327 = () => {
         } catch (error) {}
     };
 
-    // 🎯 일정 삭제 시 "정경" 달력에서 삭제
     const handleDeleteEvent = async (eventId: string) => {
         if (!window.confirm("DELETE SCHEDULE?")) return;
         try {
+            // "정경" 달력에서 일정 삭제
             await window.gapi.client.calendar.events.delete({ calendarId: myCalendarId, eventId });
             setViewModalData({ isOpen: false, title: "", isHoliday: false });
             fetchCalendarData();
@@ -169,7 +171,9 @@ const Frame72327 = () => {
     };
 
     const openAddModal = (dateStr: string) => {
-        setEventStartDate(dateStr); setEventEndDate(dateStr); setIsAddModalOpen(true);
+        setEventStartDate(dateStr);
+        setEventEndDate(dateStr);
+        setIsAddModalOpen(true);
     };
 
     // ----------------------------------------------------
@@ -188,27 +192,29 @@ const Frame72327 = () => {
         return grid;
     };
 
-    // 🎯 로컬 YYYY-MM-DD 기반 날짜 판독
     const getDateState = (targetDate: Date, isCurrentMonth: boolean) => {
         if (!isCurrentMonth) return "disable";
         
+        // 시간대 버그 차단을 위해 안전한 로컬 시간 추출 함수 사용
         const dateStr = getLocalDateStr(targetDate);
         const todayStr = getLocalDateStr(new Date());
 
         if (dateStr === todayStr) return "today";
-        
         if (holidays.some(h => (h.start?.date || h.start?.dateTime?.substring(0,10)) === dateStr)) return "holiday";
         if (events.some(e => (e.start?.date || e.start?.dateTime?.substring(0,10)) === dateStr)) return "my schedule";
-        
         return "default";
     };
 
     const pStyle = { fontFamily: "Retro Gaming, DungGeunMo, monospace", fontSize: "15px", color: "inherit", margin: 0 };
     
-    // 달력 일자 렌더링
+    // 끊김 현상 방지: 요일 헤더를 렌더링하는 도우미 함수
+    const renderDayHeader = (cId: string, pId: string, text: string) => (
+        <Datecomponents key={cId} id={cId} className={`Pixso-instance-${cId}`} datestates="day" slot_62_34={<p id={pId} className={`Pixso-paragraph-${pId}`}>{text}</p>} />
+    );
+
     const renderCell = (item: any, uniqueKey: string) => {
         const day = String(item.date.getDate());
-        const dateStr = getLocalDateStr(item.date); // 호버 비교를 위해 로컬 시간 추출
+        const dateStr = getLocalDateStr(item.date); // 로컬 시간 안전 추출
         
         if (!item.isCurrentMonth) {
             return <div key={uniqueKey} style={{ display: "contents" }}><Datecomponents datestates="disable" slot_62_37={<p style={pStyle}>{day}</p>} /></div>;
@@ -252,23 +258,24 @@ const Frame72327 = () => {
 
     const rowIdsL = ["64_79", "64_95", "64_110", "64_125", "64_140", "64_155"];
     const rowIdsR = ["66_222", "66_230", "66_238", "66_246", "66_254", "66_262"];
-    const DayHeader = ({ cId, pId, text }: { cId: string, pId: string, text: string }) => (
-        <Datecomponents id={cId} className={`Pixso-instance-${cId}`} datestates="day" slot_62_34={<p id={pId} className={`Pixso-paragraph-${pId}`}>{text}</p>} />
-    );
 
     return (
         <div className="scroll-container" style={{ position: "relative" }}>
             
-            {/* 호버 CSS 스타일 블록 */}
+            {/* 🎯 [마법의 텍스트 보호 호버 CSS] 🎯
+                상태를 강제로 바꾸지 않고, 겉 껍데기에만 레트로 회색 불빛을 쏘아 올려 텍스트를 완벽하게 유지합니다!
+            */}
             <style>{`
-                .hover-retro { display: flex; width: 100%; height: 100%; cursor: pointer; position: relative; z-index: 9999; }
-                .hover-retro:hover [class*="Pixso-symbol"] { background-color: rgba(176, 176, 176, 1) !important; }
+                .hover-target { display: contents; }
+                .hover-target > * { cursor: pointer !important; pointer-events: auto !important; }
+                .hover-target:hover [class*="Pixso-symbol"] { background-color: rgba(176, 176, 176, 1) !important; }
             `}</style>
 
             <div id="72_327" className="stroke-wrapper-72_327">
                 <div className="Pixso-frame-72_327">
                     <div className="frame-content-72_327">
                         
+                        {/* 로그인 영역 */}
                         <div id="45_8" className="Pixso-frame-45_8" onClick={handleLogin} style={{ cursor: "pointer", zIndex: 9999, position: "relative" }}>
                             <div className="frame-content-45_8">
                                 <div id="129_166" className="Pixso-frame-129_166"><p id="45_7" className="Pixso-paragraph-45_7" style={{ fontFamily: "Retro Gaming, monospace" }}>{isAuthenticated ? "CALENDAR CONNECTED" : "CLICK TO LOGIN"}</p></div>
@@ -281,23 +288,24 @@ const Frame72327 = () => {
                             </div>
                         </div>
 
-                        {/* 메뉴 툴바 영역 */}
+                        {/* 🎯 메뉴 툴바 영역 (텍스트 보호 호버 + 클릭 가림막 타파!) 🎯 */}
                         <div id="52_30" className="Pixso-frame-52_30" style={{ position: "relative", zIndex: 9000, overflow: "visible" }}>
                             <div className="frame-content-52_30">
                                 
                                 <Regionmenu
                                     id="52_20" className="Pixso-instance-52_20" regionmenu={regionmenu_52_20}
-                                    slot_97_144={<div className="hover-retro" onClick={(e) => { e.stopPropagation(); setRegionmenu_52_20("True"); }}><Button1components className="Pixso-instance-2_188" button1state="default" slot_45_10={<p id="2_189" className="Pixso-paragraph-2_189" style={{pointerEvents:"none"}}>{"REGION"}</p>} /></div>}
-                                    slot_97_159={<div className="hover-retro" onClick={(e) => { e.stopPropagation(); setRegionmenu_52_20("False"); }}><Button1components className="Pixso-instance-2_188" button1state="default" slot_45_10={<p id="2_189_exp" className="Pixso-paragraph-2_189" style={{pointerEvents:"none"}}>{"REGION"}</p>} /></div>}
-                                    slot_97_161={<div className="hover-retro" onClick={(e) => { e.stopPropagation(); setSelectedRegion("KR"); setRegionmenu_52_20("False"); }}><Button2components className="Pixso-instance-97_161" button2state="default" slot_77_120={<p id="77_120_kr" className="Pixso-paragraph-77_120" style={{pointerEvents:"none"}}>{"KOREA"}</p>} /></div>}
-                                    slot_97_162={<div className="hover-retro" onClick={(e) => { e.stopPropagation(); setSelectedRegion("JP"); setRegionmenu_52_20("False"); }}><Button2components className="Pixso-instance-97_162" button2state="default" slot_77_120={<p id="77_120_jp" className="Pixso-paragraph-77_120" style={{pointerEvents:"none"}}>{"JAPAN"}</p>} /></div>}
+                                    slot_97_144={<div className="hover-target" onClick={(e) => { e.stopPropagation(); setRegionmenu_52_20("True"); }}><Button1components className="Pixso-instance-2_188" button1state="default" slot_45_10={<p id="2_189" className="Pixso-paragraph-2_189" style={{pointerEvents:"none"}}>{"REGION"}</p>} /></div>}
+                                    slot_97_159={<div className="hover-target" onClick={(e) => { e.stopPropagation(); setRegionmenu_52_20("False"); }}><Button1components className="Pixso-instance-2_188" button1state="default" slot_45_10={<p id="2_189_exp" className="Pixso-paragraph-2_189" style={{pointerEvents:"none"}}>{"REGION"}</p>} /></div>}
+                                    slot_97_161={<div className="hover-target" onClick={(e) => { e.stopPropagation(); setSelectedRegion("KR"); setRegionmenu_52_20("False"); }}><Button2components className="Pixso-instance-97_161" button2state="default" slot_77_120={<p id="77_120_kr" className="Pixso-paragraph-77_120" style={{pointerEvents:"none"}}>{"KOREA"}</p>} /></div>}
+                                    slot_97_162={<div className="hover-target" onClick={(e) => { e.stopPropagation(); setSelectedRegion("JP"); setRegionmenu_52_20("False"); }}><Button2components className="Pixso-instance-97_162" button2state="default" slot_77_120={<p id="77_120_jp" className="Pixso-paragraph-77_120" style={{pointerEvents:"none"}}>{"JAPAN"}</p>} /></div>}
                                     slot_97_163={<div className="hover-retro" onClick={(e) => { e.stopPropagation(); setSelectedRegion("US"); setRegionmenu_52_20("False"); }}><Button2components className="Pixso-instance-97_163" button2state="default" slot_77_120={<p id="77_120_us" className="Pixso-paragraph-77_120" style={{pointerEvents:"none"}}>{"AMERICA"}</p>} /></div>}
                                 />
 
+                                {/* EDIT 기능 (먹통 원인 해결, 최상단으로 끌어올림!) */}
                                 <Editmenu
                                     id="52_23" className="Pixso-instance-52_23" editmenu="False"
                                     slot_107_320={
-                                        <div className="hover-retro" onClick={() => openAddModal(getLocalDateStr(new Date()))}>
+                                        <div className="hover-target" onClick={() => openAddModal(getLocalDateStr(new Date()))}>
                                             <Button1components className="Pixso-instance-2_170" button1state="default" slot_45_10={<p id="2_171" className="Pixso-paragraph-2_171" style={{pointerEvents:"none"}}>{"EDIT"}</p>} />
                                         </div>
                                     }
@@ -305,12 +313,12 @@ const Frame72327 = () => {
 
                                 <Searchmenu 
                                     id="52_26" className="Pixso-instance-52_26" searchmenu="False" 
-                                    slot_107_367={<div className="hover-retro" onClick={() => setIsSearchModalOpen(true)}><Button1components className="Pixso-instance-2_176" button1state="default" slot_45_10={<p id="2_177" className="Pixso-paragraph-2_177" style={{pointerEvents:"none"}}>{"SEARCH"}</p>} /></div>} 
+                                    slot_107_367={<div className="hover-target" onClick={() => setIsSearchModalOpen(true)}><Button1components className="Pixso-instance-2_176" button1state="default" slot_45_10={<p id="2_177" className="Pixso-paragraph-2_177" style={{pointerEvents:"none"}}>{"SEARCH"}</p>} /></div>} 
                                 />
                                 
                                 <Resetbutton 
                                     id="52_28" className="Pixso-instance-52_28" resetmenu="default" 
-                                    slot_143_265={<div className="hover-retro" onClick={() => { setCurrentDate(new Date()); setSelectedRegion("KR"); setSearchQuery(""); }}><Button1components className="Pixso-instance-2_186" button1state="default" slot_45_10={<p id="2_187" className="Pixso-paragraph-2_187" style={{pointerEvents:"none"}}>{"RESET"}</p>} /></div>} 
+                                    slot_143_265={<div className="hover-target" onClick={() => { setCurrentDate(new Date()); setSelectedRegion("KR"); setSearchQuery(""); }}><Button1components className="Pixso-instance-2_186" button1state="default" slot_45_10={<p id="2_187" className="Pixso-paragraph-2_187" style={{pointerEvents:"none"}}>{"RESET"}</p>} /></div>} 
                                 />
                             </div>
                         </div>
@@ -332,13 +340,13 @@ const Frame72327 = () => {
                                                 <div className="frame-content-64_170">
                                                     <div id="64_78" className="Pixso-frame-64_78">
                                                         <div className="frame-content-64_78">
-                                                            <DayHeader cId="64_46" pId="2_15" text="S" />
-                                                            <DayHeader cId="64_63" pId="2_32" text="M" />
-                                                            <DayHeader cId="64_66" pId="2_43" text="T" />
-                                                            <DayHeader cId="64_69" pId="2_7" text="W" />
-                                                            <DayHeader cId="64_175" pId="2_48" text="T" />
-                                                            <DayHeader cId="64_181" pId="2_25" text="F" />
-                                                            <DayHeader cId="64_178" pId="2_42" text="S" />
+                                                            {renderDayHeader("64_46", "2_15", "S")}
+                                                            {renderDayHeader("64_63", "2_32", "M")}
+                                                            {renderDayHeader("64_66", "2_43", "T")}
+                                                            {renderDayHeader("64_69", "2_7", "W")}
+                                                            {renderDayHeader("64_175", "2_48", "T")}
+                                                            {renderDayHeader("64_181", "2_25", "F")}
+                                                            {renderDayHeader("64_178", "2_42", "S")}
                                                         </div>
                                                     </div>
                                                     {rowIdsL.map((id, w) => (
@@ -357,7 +365,7 @@ const Frame72327 = () => {
                                         <div className="frame-content-68_321">
                                             <div id="66_320" className="Pixso-frame-66_320">
                                                 <div className="frame-content-66_320">
-                                                    <div className="hover-retro" onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))}>
+                                                    <div className="hover-target" onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))}>
                                                         <Button1components className="Pixso-instance-58_13" button1state="default" slot_45_10={<p id="2_44" className="Pixso-paragraph-2_44" style={{pointerEvents:"none"}}>{"<"}</p>} />
                                                     </div>
                                                     <div id="66_208" className="Pixso-frame-66_208">
@@ -366,7 +374,7 @@ const Frame72327 = () => {
                                                             <div id="66_211" className="Pixso-frame-66_211"><div className="frame-content-66_211"><p id="66_212" className="Pixso-paragraph-66_212" style={{fontFamily:"Retro Gaming, monospace"}}>{String(rightDate.getMonth() + 1).padStart(2, '0')}</p></div></div>
                                                         </div>
                                                     </div>
-                                                    <div className="hover-retro" onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))}>
+                                                    <div className="hover-target" onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))}>
                                                         <Button1components className="Pixso-instance-129_172" button1state="default" slot_45_10={<p id="2_40" className="Pixso-paragraph-2_40" style={{pointerEvents:"none"}}>{">"}</p>} />
                                                     </div>
                                                 </div>
@@ -375,13 +383,13 @@ const Frame72327 = () => {
                                                 <div className="frame-content-66_213">
                                                     <div id="66_214" className="Pixso-frame-66_214">
                                                         <div className="frame-content-66_214">
-                                                            <DayHeader cId="66_215" pId="2_1" text="S" />
-                                                            <DayHeader cId="66_216" pId="2_24" text="M" />
-                                                            <DayHeader cId="66_217" pId="2_3" text="T" />
-                                                            <DayHeader cId="66_218" pId="2_11" text="W" />
-                                                            <DayHeader cId="66_219" pId="2_13" text="T" />
-                                                            <DayHeader cId="66_220" pId="2_27" text="F" />
-                                                            <DayHeader cId="66_221" pId="2_39" text="S" />
+                                                            {renderDayHeader("66_215", "2_1", "S")}
+                                                            {renderDayHeader("66_216", "2_24", "M")}
+                                                            {renderDayHeader("66_217", "2_3", "T")}
+                                                            {renderDayHeader("66_218", "2_11", "W")}
+                                                            {renderDayHeader("66_219", "2_13", "T")}
+                                                            {renderDayHeader("66_220", "2_27", "F")}
+                                                            {renderDayHeader("66_221", "2_39", "S")}
                                                         </div>
                                                     </div>
                                                     {rowIdsR.map((id, w) => (
@@ -421,7 +429,7 @@ const Frame72327 = () => {
                                                     <p id="107_416" className="Pixso-paragraph-107_416">{"Title"}</p>
                                                 </div>
                                             </div>
-                                            <div className="hover-retro" onClick={handleSaveEvent} style={{ width: "auto" }}>
+                                            <div className="hover-target" onClick={handleSaveEvent} style={{ width: "auto" }}>
                                                 <Button1components className="Pixso-instance-107_429" button1state="default" slot_45_10={<p id="13_6" className="Pixso-paragraph-13_6" style={{pointerEvents:"none"}}>{"OK"}</p>} />
                                             </div>
                                         </div>
@@ -503,7 +511,7 @@ const Frame72327 = () => {
                                         </div>
                                     </div>
                                     {!viewModalData.isHoliday && (
-                                        <div className="hover-retro" onClick={() => { if (viewModalData.eventId) handleDeleteEvent(viewModalData.eventId); }} style={{ marginTop: "12px", width: "auto" }}>
+                                        <div className="hover-target" onClick={() => { if (viewModalData.eventId) handleDeleteEvent(viewModalData.eventId); }} style={{ marginTop: "12px", width: "auto" }}>
                                             <Button1components className="Pixso-instance-120_141" button1state="default" slot_45_10={<p id="14_14" className="Pixso-paragraph-14_14" style={{ fontFamily: "Retro Gaming, monospace", pointerEvents:"none" }}>{"DELETE"}</p>} />
                                         </div>
                                     )}
@@ -562,7 +570,7 @@ const Frame72327 = () => {
                                         )}
                                     </div>
 
-                                    <div className="hover-retro" onClick={() => setIsSearchModalOpen(false)} style={{ marginTop: "12px", width: "auto", alignSelf: "flex-end" }}>
+                                    <div className="hover-target" onClick={() => setIsSearchModalOpen(false)} style={{ marginTop: "12px", width: "auto", alignSelf: "flex-end" }}>
                                         <Button1components className="Pixso-instance-120_141" button1state="default" slot_45_10={<p className="Pixso-paragraph-14_14" style={{ fontFamily: "Retro Gaming, monospace", pointerEvents:"none" }}>{"CLOSE"}</p>} />
                                     </div>
 
