@@ -33,22 +33,22 @@ const HOLIDAY_CALENDARS: Record<string, string> = {
 
 const Frame72327 = () => {
     // ----------------------------------------------------
-    // 1. 상태 관리 (드롭다운 & 호버 완벽 복원)
+    // 1. 유저 메뉴 상태 (드롭다운 열림/닫힘)
     // ----------------------------------------------------
     const [regionmenu_52_20, setRegionmenu_52_20] = useState("False");
-    const [hoveredDateStr, setHoveredDateStr] = useState<string | null>(null); // 달력 호버 복원
 
     // ----------------------------------------------------
-    // 2. 구글 캘린더 엔진 상태
+    // 2. 엔진 상태 (데이터 및 팝업창 컨트롤)
     // ----------------------------------------------------
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedRegion, setSelectedRegion] = useState("KR");
+    const [myCalendarId, setMyCalendarId] = useState("primary"); // "정경" 캘린더 ID 저장용
     const [holidays, setHolidays] = useState<any[]>([]);
     const [events, setEvents] = useState<any[]>([]); 
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const tokenClientRef = useRef<any>(null);
 
-    // 모달창 상태
+    // 팝업창 상태 관리
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [eventTitle, setEventTitle] = useState("");
     const [eventStartDate, setEventStartDate] = useState("");
@@ -59,6 +59,16 @@ const Frame72327 = () => {
     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const searchResults = searchQuery.trim() ? events.filter(e => e.summary?.toLowerCase().includes(searchQuery.toLowerCase())) : [];
+
+    // ----------------------------------------------------
+    // 시간대(Timezone) 버그 해결: 무조건 한국 로컬 YYYY-MM-DD 변환
+    // ----------------------------------------------------
+    const getLocalDateStr = (d: Date) => {
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
 
     // 구글 API 로드
     useEffect(() => {
@@ -104,18 +114,27 @@ const Frame72327 = () => {
         if (isAuthenticated) fetchCalendarData();
     }, [isAuthenticated, currentDate, selectedRegion]);
 
+    // 🎯 "정경" 달력 추적 및 실시간 데이터 패치
     const fetchCalendarData = async () => {
         try {
+            // 1. 내 캘린더 목록을 뒤져서 "정경" 달력의 진짜 ID 찾기
+            const calListResp = await window.gapi.client.calendar.calendarList.list();
+            const targetCal = calListResp.result.items?.find((c: any) => c.summary === "정경");
+            const targetId = targetCal ? targetCal.id : "primary"; // "정경"이 없으면 기본 달력 사용
+            setMyCalendarId(targetId);
+
             const timeMin = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString();
             const timeMax = new Date(currentDate.getFullYear(), currentDate.getMonth() + 4, 0).toISOString();
             
+            // 공휴일 불러오기
             const holidayResp = await window.gapi.client.calendar.events.list({
                 calendarId: HOLIDAY_CALENDARS[selectedRegion], timeMin, timeMax, singleEvents: true,
             });
             setHolidays(holidayResp.result.items || []);
 
+            // 2. "정경" 달력에서 내 일정 불러오기
             const eventsResp = await window.gapi.client.calendar.events.list({
-                calendarId: "primary", timeMin, timeMax, singleEvents: true, orderBy: "startTime"
+                calendarId: targetId, timeMin, timeMax, singleEvents: true, orderBy: "startTime"
             });
             setEvents(eventsResp.result.items || []);
         } catch (error: any) {
@@ -125,11 +144,12 @@ const Frame72327 = () => {
 
     const handleLogin = () => tokenClientRef.current?.requestAccessToken({ prompt: "consent" });
 
+    // 🎯 일정 저장 시 "정경" 달력에 저장
     const handleSaveEvent = async () => {
         if (!eventTitle.trim() || !eventStartDate) return;
         try {
             await window.gapi.client.calendar.events.insert({
-                calendarId: "primary",
+                calendarId: myCalendarId,
                 resource: { summary: eventTitle, description: eventMemo, start: { date: eventStartDate }, end: { date: eventEndDate || eventStartDate } }
             });
             setEventTitle(""); setEventStartDate(""); setEventEndDate(""); setEventMemo("");
@@ -138,10 +158,11 @@ const Frame72327 = () => {
         } catch (error) {}
     };
 
+    // 🎯 일정 삭제 시 "정경" 달력에서 삭제
     const handleDeleteEvent = async (eventId: string) => {
         if (!window.confirm("DELETE SCHEDULE?")) return;
         try {
-            await window.gapi.client.calendar.events.delete({ calendarId: "primary", eventId });
+            await window.gapi.client.calendar.events.delete({ calendarId: myCalendarId, eventId });
             setViewModalData({ isOpen: false, title: "", isHoliday: false });
             fetchCalendarData();
         } catch (error) {}
@@ -152,13 +173,14 @@ const Frame72327 = () => {
     };
 
     // ----------------------------------------------------
-    // 3. 달력 렌더링 로직 (호버 완벽 복구)
+    // 달력 렌더링
     // ----------------------------------------------------
     const getGridDates = (year: number, month: number) => {
         const grid = [];
         const startDay = new Date(year, month, 1).getDay();
         const prevEnd = new Date(year, month, 0).getDate();
         const currEnd = new Date(year, month + 1, 0).getDate();
+
         for (let i = startDay - 1; i >= 0; i--) grid.push({ date: new Date(year, month - 1, prevEnd - i), isCurrentMonth: false });
         for (let i = 1; i <= currEnd; i++) grid.push({ date: new Date(year, month, i), isCurrentMonth: true });
         let nextDay = 1;
@@ -166,36 +188,42 @@ const Frame72327 = () => {
         return grid;
     };
 
+    // 🎯 로컬 YYYY-MM-DD 기반 날짜 판독
     const getDateState = (targetDate: Date, isCurrentMonth: boolean) => {
         if (!isCurrentMonth) return "disable";
-        const dateStr = targetDate.toISOString().split("T")[0];
-        if (dateStr === new Date().toISOString().split("T")[0]) return "today";
-        if (holidays.some(h => (h.start?.date || h.start?.dateTime?.split("T")[0]) === dateStr)) return "holiday";
-        if (events.some(e => (e.start?.date || e.start?.dateTime?.split("T")[0]) === dateStr)) return "my schedule";
+        
+        const dateStr = getLocalDateStr(targetDate);
+        const todayStr = getLocalDateStr(new Date());
+
+        if (dateStr === todayStr) return "today";
+        
+        if (holidays.some(h => (h.start?.date || h.start?.dateTime?.substring(0,10)) === dateStr)) return "holiday";
+        if (events.some(e => (e.start?.date || e.start?.dateTime?.substring(0,10)) === dateStr)) return "my schedule";
+        
         return "default";
     };
 
     const pStyle = { fontFamily: "Retro Gaming, DungGeunMo, monospace", fontSize: "15px", color: "inherit", margin: 0 };
     
+    // 달력 일자 렌더링
     const renderCell = (item: any, uniqueKey: string) => {
         const day = String(item.date.getDate());
-        const dateStr = item.date.toISOString().split("T")[0];
+        const dateStr = getLocalDateStr(item.date); // 호버 비교를 위해 로컬 시간 추출
         
         if (!item.isCurrentMonth) {
-            return <Datecomponents key={uniqueKey} datestates="disable" slot_62_37={<p style={pStyle}>{day}</p>} />;
+            return <div key={uniqueKey} style={{ display: "contents" }}><Datecomponents datestates="disable" slot_62_37={<p style={pStyle}>{day}</p>} /></div>;
         }
         
         const state = getDateState(item.date, true);
-        // 🎯 유저님이 완벽하다고 칭찬하신 바로 그 날짜 호버 변환 로직 복원!
         const visualState = (hoveredDateStr === dateStr) ? "checked" : state; 
         
         const handleClick = (e: any) => {
             e.stopPropagation();
             if (state === "holiday") {
-                const hol = holidays.find(h => (h.start?.date || h.start?.dateTime?.split("T")[0]) === dateStr);
+                const hol = holidays.find(h => (h.start?.date || h.start?.dateTime?.substring(0,10)) === dateStr);
                 setViewModalData({ isOpen: true, title: hol?.summary || "공휴일", isHoliday: true }); 
             } else if (state === "my schedule") {
-                const evnt = events.find(e => (e.start?.date || e.start?.dateTime?.split("T")[0]) === dateStr);
+                const evnt = events.find(e => (e.start?.date || e.start?.dateTime?.substring(0,10)) === dateStr);
                 setViewModalData({ isOpen: true, eventId: evnt?.id, title: evnt?.summary || "일정", isHoliday: false }); 
             } else {
                 openAddModal(dateStr);
@@ -222,17 +250,16 @@ const Frame72327 = () => {
     const leftGrid = getGridDates(leftDate.getFullYear(), leftDate.getMonth());
     const rightGrid = getGridDates(rightDate.getFullYear(), rightDate.getMonth());
 
-    // 끊김 현상 방지: 달력 줄 압축 매핑
     const rowIdsL = ["64_79", "64_95", "64_110", "64_125", "64_140", "64_155"];
     const rowIdsR = ["66_222", "66_230", "66_238", "66_246", "66_254", "66_262"];
+    const DayHeader = ({ cId, pId, text }: { cId: string, pId: string, text: string }) => (
+        <Datecomponents id={cId} className={`Pixso-instance-${cId}`} datestates="day" slot_62_34={<p id={pId} className={`Pixso-paragraph-${pId}`}>{text}</p>} />
+    );
 
     return (
         <div className="scroll-container" style={{ position: "relative" }}>
             
-            {/* 🎯 [마법의 텍스트 보호 호버 CSS] 🎯
-                상태를 'checked'로 바꾸지 않고, 겉 껍데기에만 레트로 회색 불빛을 쏘아 올립니다!
-                이제 글자가 무조건 유지되면서 호버 효과만 나타납니다.
-            */}
+            {/* 호버 CSS 스타일 블록 */}
             <style>{`
                 .hover-retro { display: flex; width: 100%; height: 100%; cursor: pointer; position: relative; z-index: 9999; }
                 .hover-retro:hover [class*="Pixso-symbol"] { background-color: rgba(176, 176, 176, 1) !important; }
@@ -242,7 +269,6 @@ const Frame72327 = () => {
                 <div className="Pixso-frame-72_327">
                     <div className="frame-content-72_327">
                         
-                        {/* 로그인 영역 */}
                         <div id="45_8" className="Pixso-frame-45_8" onClick={handleLogin} style={{ cursor: "pointer", zIndex: 9999, position: "relative" }}>
                             <div className="frame-content-45_8">
                                 <div id="129_166" className="Pixso-frame-129_166"><p id="45_7" className="Pixso-paragraph-45_7" style={{ fontFamily: "Retro Gaming, monospace" }}>{isAuthenticated ? "CALENDAR CONNECTED" : "CLICK TO LOGIN"}</p></div>
@@ -255,7 +281,7 @@ const Frame72327 = () => {
                             </div>
                         </div>
 
-                        {/* 🎯 메뉴 툴바 (텍스트 보호 호버 + 클릭 가림막 타파!) 🎯 */}
+                        {/* 메뉴 툴바 영역 */}
                         <div id="52_30" className="Pixso-frame-52_30" style={{ position: "relative", zIndex: 9000, overflow: "visible" }}>
                             <div className="frame-content-52_30">
                                 
@@ -268,11 +294,10 @@ const Frame72327 = () => {
                                     slot_97_163={<div className="hover-retro" onClick={(e) => { e.stopPropagation(); setSelectedRegion("US"); setRegionmenu_52_20("False"); }}><Button2components className="Pixso-instance-97_163" button2state="default" slot_77_120={<p id="77_120_us" className="Pixso-paragraph-77_120" style={{pointerEvents:"none"}}>{"AMERICA"}</p>} /></div>}
                                 />
 
-                                {/* EDIT 기능 (먹통 원인 해결, 최상단으로 끌어올림!) */}
                                 <Editmenu
                                     id="52_23" className="Pixso-instance-52_23" editmenu="False"
                                     slot_107_320={
-                                        <div className="hover-retro" onClick={() => openAddModal(new Date().toISOString().split("T")[0])}>
+                                        <div className="hover-retro" onClick={() => openAddModal(getLocalDateStr(new Date()))}>
                                             <Button1components className="Pixso-instance-2_170" button1state="default" slot_45_10={<p id="2_171" className="Pixso-paragraph-2_171" style={{pointerEvents:"none"}}>{"EDIT"}</p>} />
                                         </div>
                                     }
@@ -307,16 +332,15 @@ const Frame72327 = () => {
                                                 <div className="frame-content-64_170">
                                                     <div id="64_78" className="Pixso-frame-64_78">
                                                         <div className="frame-content-64_78">
-                                                            <Datecomponents id="64_46" className="Pixso-instance-64_46" datestates="day" slot_62_34={<p id="2_15" className="Pixso-paragraph-2_15">{"S"}</p>} />
-                                                            <Datecomponents id="64_63" className="Pixso-instance-64_63" datestates="day" slot_62_34={<p id="2_32" className="Pixso-paragraph-2_32">{"M"}</p>} />
-                                                            <Datecomponents id="64_66" className="Pixso-instance-64_66" datestates="day" slot_62_34={<p id="2_43" className="Pixso-paragraph-2_43">{"T"}</p>} />
-                                                            <Datecomponents id="64_69" className="Pixso-instance-64_69" datestates="day" slot_62_34={<p id="2_7" className="Pixso-paragraph-2_7">{"W"}</p>} />
-                                                            <Datecomponents id="64_175" className="Pixso-instance-64_175" datestates="day" slot_62_34={<p id="2_48" className="Pixso-paragraph-2_48">{"T"}</p>} />
-                                                            <Datecomponents id="64_181" className="Pixso-instance-64_181" datestates="day" slot_62_34={<p id="2_25" className="Pixso-paragraph-2_25">{"F"}</p>} />
-                                                            <Datecomponents id="64_178" className="Pixso-instance-64_178" datestates="day" slot_62_34={<p id="2_42" className="Pixso-paragraph-2_42">{"S"}</p>} />
+                                                            <DayHeader cId="64_46" pId="2_15" text="S" />
+                                                            <DayHeader cId="64_63" pId="2_32" text="M" />
+                                                            <DayHeader cId="64_66" pId="2_43" text="T" />
+                                                            <DayHeader cId="64_69" pId="2_7" text="W" />
+                                                            <DayHeader cId="64_175" pId="2_48" text="T" />
+                                                            <DayHeader cId="64_181" pId="2_25" text="F" />
+                                                            <DayHeader cId="64_178" pId="2_42" text="S" />
                                                         </div>
                                                     </div>
-                                                    {/* 자동 매핑 & 코드 압축 */}
                                                     {rowIdsL.map((id, w) => (
                                                         <div key={id} id={id} className={`Pixso-frame-${id}`}>
                                                             <div className={`frame-content-${id}`}>{leftGrid.slice(w*7, w*7+7).map((item, idx) => renderCell(item, `L-${w}-${idx}`))}</div>
@@ -351,13 +375,13 @@ const Frame72327 = () => {
                                                 <div className="frame-content-66_213">
                                                     <div id="66_214" className="Pixso-frame-66_214">
                                                         <div className="frame-content-66_214">
-                                                            <Datecomponents id="66_215" className="Pixso-instance-66_215" datestates="day" slot_62_34={<p id="2_1" className="Pixso-paragraph-2_1">{"S"}</p>} />
-                                                            <Datecomponents id="66_216" className="Pixso-instance-66_216" datestates="day" slot_62_34={<p id="2_24" className="Pixso-paragraph-2_24">{"M"}</p>} />
-                                                            <Datecomponents id="66_217" className="Pixso-instance-66_217" datestates="day" slot_62_34={<p id="2_3" className="Pixso-paragraph-2_3">{"T"}</p>} />
-                                                            <Datecomponents id="66_218" className="Pixso-instance-66_218" datestates="day" slot_62_34={<p id="2_11" className="Pixso-paragraph-2_11">{"W"}</p>} />
-                                                            <Datecomponents id="66_219" className="Pixso-instance-66_219" datestates="day" slot_62_34={<p id="2_13" className="Pixso-paragraph-2_13">{"T"}</p>} />
-                                                            <Datecomponents id="66_220" className="Pixso-instance-66_220" datestates="day" slot_62_34={<p id="2_27" className="Pixso-paragraph-2_27">{"F"}</p>} />
-                                                            <Datecomponents id="66_221" className="Pixso-instance-66_221" datestates="day" slot_62_34={<p id="2_39" className="Pixso-paragraph-2_39">{"S"}</p>} />
+                                                            <DayHeader cId="66_215" pId="2_1" text="S" />
+                                                            <DayHeader cId="66_216" pId="2_24" text="M" />
+                                                            <DayHeader cId="66_217" pId="2_3" text="T" />
+                                                            <DayHeader cId="66_218" pId="2_11" text="W" />
+                                                            <DayHeader cId="66_219" pId="2_13" text="T" />
+                                                            <DayHeader cId="66_220" pId="2_27" text="F" />
+                                                            <DayHeader cId="66_221" pId="2_39" text="S" />
                                                         </div>
                                                     </div>
                                                     {rowIdsR.map((id, w) => (
