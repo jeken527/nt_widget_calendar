@@ -1,6 +1,7 @@
 import Regionmenu from "@/components/Regionmenu";
 import { useState, useEffect, useRef } from "react";
 import Button1components from "@/components/Button1components";
+import Button2components from "@/components/Button2components"; // 드롭다운 하위 메뉴 부품 추가!
 import Editmenu from "@/components/Editmenu";
 import Searchmenu from "@/components/Searchmenu";
 import Resetbutton from "@/components/Resetbutton";
@@ -28,7 +29,7 @@ const HOLIDAY_CALENDARS: Record<string, string> = {
 
 const Frame72327 = () => {
     // ----------------------------------------------------
-    // 1. 유저 원본 메뉴 상태 (원본 그대로 유지)
+    // 1. 유저 원본 껍데기 상태 
     // ----------------------------------------------------
     const [regionmenu_52_20, setRegionmenu_52_20] = useState("False");
     const [button1state_2_188, setButton1state_2_188] = useState("default");
@@ -39,7 +40,7 @@ const Frame72327 = () => {
     const [button1state_129_172, setButton1state_129_172] = useState("default");
 
     // ----------------------------------------------------
-    // 2. 동적 달력 엔진 상태 (신규 추가)
+    // 2. 동적 달력 및 드롭다운 엔진 상태
     // ----------------------------------------------------
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedRegion, setSelectedRegion] = useState("KR");
@@ -107,13 +108,30 @@ const Frame72327 = () => {
 
     const handleLogin = () => tokenClientRef.current?.requestAccessToken({ prompt: "consent" });
 
-    const cycleRegion = (e: any) => {
+    // ----------------------------------------------------
+    // 드롭다운 메뉴 작동 함수
+    // ----------------------------------------------------
+    const toggleRegionMenu = (e: any) => {
         e.stopPropagation();
-        const next = selectedRegion === "KR" ? "JP" : selectedRegion === "JP" ? "US" : "KR";
-        setSelectedRegion(next);
+        setRegionmenu_52_20(prev => prev === "False" ? "True" : "False");
     };
 
-    // 달력 날짜 계산
+    const selectRegion = (region: string) => (e: any) => {
+        e.stopPropagation();
+        setSelectedRegion(region);
+        setRegionmenu_52_20("False"); // 선택 후 메뉴 닫기
+    };
+
+    // 현재 선택된 국가를 텍스트로 보여주기 위한 헬퍼
+    const getRegionText = () => {
+        if (selectedRegion === "KR") return "KOREA";
+        if (selectedRegion === "JP") return "JAPAN";
+        return "AMERICA";
+    };
+
+    // ----------------------------------------------------
+    // 달력 날짜 자동 계산 로직
+    // ----------------------------------------------------
     const getGridDates = (year: number, month: number) => {
         const grid = [];
         const startDay = new Date(year, month, 1).getDay();
@@ -135,9 +153,6 @@ const Frame72327 = () => {
         return "default";
     };
 
-    // ----------------------------------------------------
-    // 3. 유저 원본 부품 매핑 함수 (디자인 100% 동일하게 렌더링)
-    // ----------------------------------------------------
     const pStyle = { fontFamily: "Retro Gaming, DungGeunMo, monospace", fontSize: "15px", color: "inherit", margin: 0 };
     
     const renderCell = (item: any, idx: number) => {
@@ -213,18 +228,44 @@ const Frame72327 = () => {
                             </div>
                         </div>
 
-                        {/* 메뉴 툴바 (순정 형태 완벽 보존) */}
+                        {/* 메뉴 툴바 */}
                         <div id="52_30" className="Pixso-frame-52_30">
                             <div className="frame-content-52_30">
+                                
+                                {/* 🎯 완벽하게 복원된 드롭다운 영역 🎯 */}
                                 <Regionmenu
-                                    id="52_20" className="Pixso-instance-52_20" regionmenu={regionmenu_52_20}
+                                    id="52_20" className="Pixso-instance-52_20" 
+                                    regionmenu={regionmenu_52_20}
+                                    click={toggleRegionMenu}
+                                    
+                                    // 1. 메뉴가 닫혀있을 때 보이는 버튼
                                     slot_97_144={
                                         <Button1components
                                             id="2_188" className="Pixso-instance-2_188" button1state={button1state_2_188}
-                                            slot_45_10={<p id="2_189" className="Pixso-paragraph-2_189" onClick={cycleRegion} style={{cursor:"pointer", pointerEvents:"auto"}}>{selectedRegion}</p>}
+                                            slot_45_10={<p id="2_189" className="Pixso-paragraph-2_189" style={{cursor:"pointer", pointerEvents:"auto"}}>{getRegionText()}</p>}
                                         />
                                     }
+                                    // 2. 메뉴가 열려있을 때 상단에 켜져 있는(Checked) 버튼
+                                    slot_97_159={
+                                        <Button1components
+                                            id="2_188_exp" className="Pixso-instance-2_188" button1state="checked"
+                                            slot_45_10={<p id="2_189_exp" className="Pixso-paragraph-2_189" style={{cursor:"pointer", pointerEvents:"auto"}}>{getRegionText()}</p>}
+                                        />
+                                    }
+                                    // 3. 하위 메뉴 항목: KOREA
+                                    slot_97_161={
+                                        <Button2components button2state="default" click={selectRegion("KR")} slot_77_120={<p id="77_120_kr" className="Pixso-paragraph-77_120" style={{cursor:"pointer", pointerEvents:"auto"}}>{"KOREA"}</p>} />
+                                    }
+                                    // 4. 하위 메뉴 항목: JAPAN
+                                    slot_97_162={
+                                        <Button2components button2state="default" click={selectRegion("JP")} slot_77_120={<p id="77_120_jp" className="Pixso-paragraph-77_120" style={{cursor:"pointer", pointerEvents:"auto"}}>{"JAPAN"}</p>} />
+                                    }
+                                    // 5. 하위 메뉴 항목: AMERICA
+                                    slot_97_163={
+                                        <Button2components button2state="default" click={selectRegion("US")} slot_77_120={<p id="77_120_us" className="Pixso-paragraph-77_120" style={{cursor:"pointer", pointerEvents:"auto"}}>{"AMERICA"}</p>} />
+                                    }
                                 />
+
                                 <Editmenu
                                     id="52_23" className="Pixso-instance-52_23" editmenu="False"
                                     slot_107_320={
