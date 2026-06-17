@@ -44,7 +44,7 @@ const Frame72327 = () => {
     const [button1state_129_172, setButton1state_129_172] = useState("default");
     const [transitionConfig52_20, setTransitionConfig52_20] = useState<any>({});
     
-    // 추가/조회 모달 버튼 상태
+    // 모달창 OK / DELETE 버튼 상태
     const [button1state_107_429, setButton1state_107_429] = useState("default");
     const [button1state_120_141, setButton1state_120_141] = useState("default");
 
@@ -58,20 +58,19 @@ const Frame72327 = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const tokenClientRef = useRef<any>(null);
 
-    // 1번 모달: 일정 추가
+    // 🎯 1번 모달: 일정 추가
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [eventTitle, setEventTitle] = useState("");
     const [eventStartDate, setEventStartDate] = useState("");
     const [eventEndDate, setEventEndDate] = useState("");
     const [eventMemo, setEventMemo] = useState("");
 
-    // 2번 모달: 일정 확인/삭제
+    // 🎯 2번 모달: 일정 확인/삭제
     const [viewModalData, setViewModalData] = useState<{ isOpen: boolean; eventId?: string; title: string; isHoliday: boolean }>({ isOpen: false, title: "", isHoliday: false });
 
-    // 🎯 3번 모달: SEARCH 팝업창 🎯
+    // 🎯 3번 모달: SEARCH 팝업창
     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
-    // 검색어에 맞춰 이벤트를 실시간 필터링
     const searchResults = searchQuery.trim() ? events.filter(e => e.summary?.toLowerCase().includes(searchQuery.toLowerCase())) : [];
 
     // 구글 API 로드
@@ -298,35 +297,84 @@ const Frame72327 = () => {
                             </div>
                         </div>
 
+                        {/* 🎯 메뉴 툴바 영역 (상자 걷어내고 직접 클릭 연동 완료!) 🎯 */}
                         <div id="52_30" className="Pixso-frame-52_30" style={{ position: "relative", zIndex: 9000, overflow: "visible" }}>
                             <div className="frame-content-52_30">
                                 
                                 <Regionmenu
                                     id="52_20" className="Pixso-instance-52_20" regionmenu={regionmenu_52_20}
-                                    click={(e) => { e.stopPropagation(); setRegionmenu_52_20(prev => prev === "False" ? "True" : "False"); }}
-                                    slot_97_144={<Button1components id="2_188" className="Pixso-instance-2_188" button1state={button1state_2_188} slot_45_10={<p id="2_189" className="Pixso-paragraph-2_189" style={{cursor:"pointer", pointerEvents:"auto"}}>{"REGION"}</p>} />}
-                                    slot_97_159={<Button1components id="2_188_exp" className="Pixso-instance-2_188" button1state="checked" slot_45_10={<p id="2_189_exp" className="Pixso-paragraph-2_189" style={{cursor:"pointer", pointerEvents:"auto"}} onClick={(e) => { e.stopPropagation(); setRegionmenu_52_20("False"); }}>{"REGION"}</p>} />}
-                                    slot_97_161={<Button2components button2state="default" click={(e) => { e.stopPropagation(); setSelectedRegion("KR"); setRegionmenu_52_20("False"); }} slot_77_120={<p id="77_120_kr" className="Pixso-paragraph-77_120" style={{cursor:"pointer", pointerEvents:"auto"}}>{"KOREA"}</p>} />}
-                                    slot_97_162={<Button2components button2state="default" click={(e) => { e.stopPropagation(); setSelectedRegion("JP"); setRegionmenu_52_20("False"); }} slot_77_120={<p id="77_120_jp" className="Pixso-paragraph-77_120" style={{cursor:"pointer", pointerEvents:"auto"}}>{"JAPAN"}</p>} />}
-                                    slot_97_163={<Button2components button2state="default" click={(e) => { e.stopPropagation(); setSelectedRegion("US"); setRegionmenu_52_20("False"); }} slot_77_120={<p id="77_120_us" className="Pixso-paragraph-77_120" style={{cursor:"pointer", pointerEvents:"auto"}}>{"AMERICA"}</p>} />}
+                                    slot_97_144={
+                                        <Button1components
+                                            id="2_188" className="Pixso-instance-2_188" button1state={button1state_2_188}
+                                            mouseover={() => setButton1state_2_188("checked")}
+                                            slot_45_10={
+                                                <p id="2_189" className="Pixso-paragraph-2_189" style={{cursor:"pointer", pointerEvents:"auto"}} onClick={(e) => { e.stopPropagation(); setRegionmenu_52_20("True"); }}>
+                                                    {"REGION"}
+                                                </p>
+                                            }
+                                        />
+                                    }
+                                    slot_97_159={
+                                        <Button1components
+                                            id="2_188_exp" className="Pixso-instance-2_188" button1state="checked"
+                                            slot_45_10={
+                                                <p id="2_189_exp" className="Pixso-paragraph-2_189" style={{cursor:"pointer", pointerEvents:"auto"}} onClick={(e) => { e.stopPropagation(); setRegionmenu_52_20("False"); }}>
+                                                    {"REGION"}
+                                                </p>
+                                            }
+                                        />
+                                    }
+                                    slot_97_161={<Button2components button2state="default" slot_77_120={<p id="77_120_kr" className="Pixso-paragraph-77_120" style={{cursor:"pointer", pointerEvents:"auto"}} onClick={(e) => { e.stopPropagation(); setSelectedRegion("KR"); setRegionmenu_52_20("False"); }}>{"KOREA"}</p>} />}
+                                    slot_97_162={<Button2components button2state="default" slot_77_120={<p id="77_120_jp" className="Pixso-paragraph-77_120" style={{cursor:"pointer", pointerEvents:"auto"}} onClick={(e) => { e.stopPropagation(); setSelectedRegion("JP"); setRegionmenu_52_20("False"); }}>{"JAPAN"}</p>} />}
+                                    slot_97_163={<Button2components button2state="default" slot_77_120={<p id="77_120_us" className="Pixso-paragraph-77_120" style={{cursor:"pointer", pointerEvents:"auto"}} onClick={(e) => { e.stopPropagation(); setSelectedRegion("US"); setRegionmenu_52_20("False"); }}>{"AMERICA"}</p>} />}
                                 />
 
-                                <div onClick={() => openAddModal(new Date().toISOString().split("T")[0])} style={{cursor:"pointer"}}>
-                                    <Editmenu
-                                        id="52_23" className="Pixso-instance-52_23" editmenu="False"
-                                        slot_107_320={<Button1components id="2_170" className="Pixso-instance-2_170" button1state={button1state_2_170} slot_45_10={<p id="2_171" className="Pixso-paragraph-2_171">{"EDIT"}</p>} />}
-                                    />
-                                </div>
+                                {/* EDIT 기능 다이렉트 연결 (일정 추가 창) */}
+                                <Editmenu
+                                    id="52_23" className="Pixso-instance-52_23" editmenu="False"
+                                    slot_107_320={
+                                        <Button1components
+                                            id="2_170" className="Pixso-instance-2_170" button1state={button1state_2_170}
+                                            mouseover={() => setButton1state_2_170("checked")}
+                                            slot_45_10={
+                                                <p id="2_171" className="Pixso-paragraph-2_171" onClick={() => openAddModal(new Date().toISOString().split("T")[0])} style={{cursor:"pointer", pointerEvents:"auto"}}>
+                                                    {"EDIT"}
+                                                </p>
+                                            }
+                                        />
+                                    }
+                                />
 
-                                {/* 🎯 SEARCH 메뉴 클릭 시 서치 모달 오픈 연결 🎯 */}
-                                <div onClick={() => setIsSearchModalOpen(true)} style={{cursor:"pointer"}}>
-                                    <Searchmenu 
-                                        id="52_26" className="Pixso-instance-52_26" searchmenu="False" 
-                                        slot_107_367={<Button1components id="2_176" className="Pixso-instance-2_176" button1state={button1state_2_176} slot_45_10={<p id="2_177" className="Pixso-paragraph-2_177" style={{cursor:"pointer", pointerEvents:"auto"}}>{"SEARCH"}</p>} />} 
-                                    />
-                                </div>
+                                {/* SEARCH 기능 다이렉트 연결 (검색 창) */}
+                                <Searchmenu 
+                                    id="52_26" className="Pixso-instance-52_26" searchmenu="False" 
+                                    slot_107_367={
+                                        <Button1components 
+                                            id="2_176" className="Pixso-instance-2_176" button1state={button1state_2_176} 
+                                            mouseover={() => setButton1state_2_176("checked")}
+                                            slot_45_10={
+                                                <p id="2_177" className="Pixso-paragraph-2_177" onClick={() => setIsSearchModalOpen(true)} style={{cursor:"pointer", pointerEvents:"auto"}}>
+                                                    {"SEARCH"}
+                                                </p>
+                                            } 
+                                        />
+                                    } 
+                                />
                                 
-                                <Resetbutton id="52_28" className="Pixso-instance-52_28" resetmenu="default" slot_143_265={<Button1components id="2_186" className="Pixso-instance-2_186" button1state={button1state_2_186} slot_45_10={<p id="2_187" className="Pixso-paragraph-2_187" onClick={() => { setCurrentDate(new Date()); setSelectedRegion("KR"); setSearchQuery(""); }} style={{cursor:"pointer", pointerEvents:"auto"}}>{"RESET"}</p>} />} />
+                                <Resetbutton 
+                                    id="52_28" className="Pixso-instance-52_28" resetmenu="default" 
+                                    slot_143_265={
+                                        <Button1components 
+                                            id="2_186" className="Pixso-instance-2_186" button1state={button1state_2_186} 
+                                            mouseover={() => setButton1state_2_186("checked")}
+                                            slot_45_10={
+                                                <p id="2_187" className="Pixso-paragraph-2_187" onClick={() => { setCurrentDate(new Date()); setSelectedRegion("KR"); setSearchQuery(""); }} style={{cursor:"pointer", pointerEvents:"auto"}}>
+                                                    {"RESET"}
+                                                </p>
+                                            } 
+                                        />
+                                    } 
+                                />
                             </div>
                         </div>
 
@@ -373,14 +421,14 @@ const Frame72327 = () => {
                                         <div className="frame-content-68_321">
                                             <div id="66_320" className="Pixso-frame-66_320">
                                                 <div className="frame-content-66_320">
-                                                    <Button1components id="58_13" className="Pixso-instance-58_13" button1state={button1state_58_13} slot_45_10={<p id="2_44" className="Pixso-paragraph-2_44" onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))} style={{cursor:"pointer", pointerEvents:"auto"}}>{"<"}</p>} />
+                                                    <Button1components id="58_13" className="Pixso-instance-58_13" button1state={button1state_58_13} mouseover={() => setButton1state_58_13("checked")} slot_45_10={<p id="2_44" className="Pixso-paragraph-2_44" onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))} style={{cursor:"pointer", pointerEvents:"auto"}}>{"<"}</p>} />
                                                     <div id="66_208" className="Pixso-frame-66_208">
                                                         <div className="frame-content-66_208">
                                                             <div id="66_209" className="Pixso-frame-66_209"><div className="frame-content-66_209"><p id="66_210" className="Pixso-paragraph-66_210" style={{fontFamily:"Retro Gaming, monospace"}}>{rightDate.getFullYear()}</p></div></div>
                                                             <div id="66_211" className="Pixso-frame-66_211"><div className="frame-content-66_211"><p id="66_212" className="Pixso-paragraph-66_212" style={{fontFamily:"Retro Gaming, monospace"}}>{String(rightDate.getMonth() + 1).padStart(2, '0')}</p></div></div>
                                                         </div>
                                                     </div>
-                                                    <Button1components id="129_172" className="Pixso-instance-129_172" button1state={button1state_129_172} slot_45_10={<p id="2_40" className="Pixso-paragraph-2_40" onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))} style={{cursor:"pointer", pointerEvents:"auto"}}>{">"}</p>} />
+                                                    <Button1components id="129_172" className="Pixso-instance-129_172" button1state={button1state_129_172} mouseover={() => setButton1state_129_172("checked")} slot_45_10={<p id="2_40" className="Pixso-paragraph-2_40" onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))} style={{cursor:"pointer", pointerEvents:"auto"}}>{">"}</p>} />
                                                 </div>
                                             </div>
                                             <div id="66_213" className="Pixso-frame-66_213">
@@ -416,7 +464,7 @@ const Frame72327 = () => {
             </div>
 
             {/* ---------------------------------------------------- */}
-            {/* 모달 1: 일정 추가 모달창 */}
+            {/* 🎯 모달 1: 일정 추가 모달창 (Frame107433) 🎯 */}
             {/* ---------------------------------------------------- */}
             {isAddModalOpen && (
                 <div 
@@ -447,7 +495,7 @@ const Frame72327 = () => {
                                         <div id="107_410" className="stroke-wrapper-107_410">
                                             <div className="Pixso-rectangle-107_410" style={{ position: "relative" }}>
                                                 <div className="shadow-blend-unknown-0"></div>
-                                                <input type="text" value={eventTitle} onChange={(e) => setEventTitle(e.target.value)} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", background: "transparent", border: "none", outline: "none", padding: "0 8px", fontFamily: "inherit" }} />
+                                                <input autoFocus type="text" value={eventTitle} onChange={(e) => setEventTitle(e.target.value)} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", background: "transparent", border: "none", outline: "none", padding: "0 8px", fontFamily: "inherit" }} />
                                             </div>
                                             <div className="stroke-107_410"></div>
                                         </div>
@@ -497,7 +545,7 @@ const Frame72327 = () => {
             )}
 
             {/* ---------------------------------------------------- */}
-            {/* 모달 2: 일정 확인/삭제 모달창 (Frame120147 원본 CSS 재활용) */}
+            {/* 🎯 모달 2: 일정 확인/삭제 모달창 (Frame120147) 🎯 */}
             {/* ---------------------------------------------------- */}
             {viewModalData.isOpen && (
                 <div 
@@ -537,7 +585,7 @@ const Frame72327 = () => {
             )}
 
             {/* ---------------------------------------------------- */}
-            {/* 🎯 모달 3: SEARCH 모달창 (Frame120147 원본 CSS 재활용) 🎯 */}
+            {/* 🎯 모달 3: SEARCH 모달창 (Frame120147 CSS 재활용) 🎯 */}
             {/* ---------------------------------------------------- */}
             {isSearchModalOpen && (
                 <div 
@@ -549,7 +597,6 @@ const Frame72327 = () => {
                             <div className="Pixso-frame-120_147" style={{ justifyContent: "flex-start" }}>
                                 <div className="frame-content-120_147" style={{ alignItems: "stretch", padding: "12px" }}>
                                     
-                                    {/* 1. 타이틀 영역 */}
                                     <div className="Pixso-frame-120_146" style={{ width: "100%", height: "auto" }}>
                                         <div className="frame-content-120_146">
                                             <div className="Pixso-frame-120_137" style={{ width: "100%", padding: "4px" }}>
@@ -562,19 +609,13 @@ const Frame72327 = () => {
                                         </div>
                                     </div>
                                     
-                                    {/* 2. 검색어 입력창 (레트로 음각 디자인) */}
                                     <div style={{ marginTop: "10px", border: "2px solid", borderTopColor: "#888", borderLeftColor: "#888", borderBottomColor: "#fff", borderRightColor: "#fff", backgroundColor: "#fff" }}>
                                         <input 
-                                            autoFocus 
-                                            type="text" 
-                                            placeholder="KEYWORD..." 
-                                            value={searchQuery} 
-                                            onChange={(e) => setSearchQuery(e.target.value)} 
+                                            autoFocus type="text" placeholder="KEYWORD..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} 
                                             style={{ width: "100%", padding: "6px", border: "none", outline: "none", fontFamily: "Retro Gaming, DungGeunMo, monospace", fontSize: "12px", boxSizing: "border-box" }} 
                                         />
                                     </div>
 
-                                    {/* 3. 검색 결과 목록 (레트로 음각 디자인) */}
                                     <div style={{ marginTop: "10px", minHeight: "100px", maxHeight: "150px", overflowY: "auto", backgroundColor: "#fff", border: "2px solid", borderTopColor: "#888", borderLeftColor: "#888", borderBottomColor: "#fff", borderRightColor: "#fff", padding: "8px", fontFamily: "DungGeunMo, monospace", fontSize: "12px", boxSizing: "border-box" }}>
                                         {searchQuery.trim() === "" ? (
                                             <span style={{ color: "#888" }}>Waiting for input...</span>
@@ -583,14 +624,13 @@ const Frame72327 = () => {
                                         ) : (
                                             searchResults.map((e, i) => (
                                                 <div key={i} style={{ margin: "4px 0", borderBottom: "1px dashed #ccc", paddingBottom: "4px", cursor: "pointer" }}>
-                                                    <span style={{ color: "blue", marginRight: "6px" }}>[{e.start.date || e.start.dateTime?.split("T")[0]}]</span>
+                                                    <span style={{ color: "blue", marginRight: "6px" }}>[{e.start?.date || e.start?.dateTime?.split("T")[0]}]</span>
                                                     {e.summary}
                                                 </div>
                                             ))
                                         )}
                                     </div>
 
-                                    {/* 4. 닫기 버튼 */}
                                     <div style={{ marginTop: "12px", display: "flex", justifyContent: "flex-end" }} onClick={() => setIsSearchModalOpen(false)}>
                                         <Button1components
                                             id="search_close" className="Pixso-instance-120_141" button1state="default"
