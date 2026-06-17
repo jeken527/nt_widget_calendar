@@ -1,0 +1,426 @@
+
+.scroll-container {
+        height: 100%;
+width: 100%;
+overflow: auto;
+      }
+.Pixso-frame-107_433 {
+        width: 100%;
+height: 100%;
+position: relative;
+flex-shrink: 0;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: flex-start;
+box-shadow: -3px -3px 2px 0px rgba(0, 0, 0, 0.7) inset;
+background-color: rgba(221, 221, 221, 1);
+mix-blend-mode: normal;
+      }
+.frame-content-107_433 {
+        display: flex;
+flex-direction: column;
+gap: 4px;
+align-items: flex-start;
+justify-content: center;
+padding: 0px 0px 8px 8px;
+width: 100%;
+height: 100%;
+position: relative;
+      }
+.stroke-wrapper-107_433 {
+        position: relative;
+width: 100%;
+height: 250px;
+display: flex;
+flex-shrink: 0;
+      }
+.stroke-107_433 {
+        position: absolute;
+inset: 0px;
+border-radius: 0px 0px 0px 0px;
+pointer-events: none;
+border-width: 2px 0px 0px 2px;
+border-style: solid;
+box-sizing: border-box;
+border-color: rgba(255, 255, 255, 1);
+      }
+.Pixso-frame-107_432 {
+        width: 220px;
+height: 15px;
+position: relative;
+flex-shrink: 0;
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: center;
+mix-blend-mode: normal;
+      }
+.frame-content-107_432 {
+        display: flex;
+flex-direction: row;
+align-items: center;
+justify-content: space-between;
+width: 100%;
+height: 100%;
+position: relative;
+      }
+.Pixso-frame-107_417 {
+        width: 35px;
+height: 15px;
+position: relative;
+flex-shrink: 0;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: flex-start;
+mix-blend-mode: normal;
+      }
+.frame-content-107_417 {
+        display: flex;
+flex-direction: column;
+align-items: flex-start;
+justify-content: center;
+width: 100%;
+height: 100%;
+position: relative;
+      }
+.Pixso-paragraph-107_416 {
+        font-size: 12px;
+font-family: "Retro Gaming-Regular";
+font-weight: 400;
+text-align: center;
+display: flex;
+flex-direction: column;
+justify-content: center;
+letter-spacing: 0em;
+text-decoration: none;
+color: rgba(0, 0, 0, 1);
+width: 35px;
+height: 15px;
+position: relative;
+flex-shrink: 0;
+mix-blend-mode: normal;
+      }
+.Pixso-instance-107_429 {
+        width: 35px;
+height: 15px;
+      }
+.Pixso-paragraph-13_6 {
+        font-size: 12px;
+font-family: "Retro Gaming-Regular";
+font-weight: 400;
+text-align: center;
+display: flex;
+flex-direction: column;
+justify-content: center;
+letter-spacing: 0em;
+text-decoration: none;
+color: rgba(0, 0, 0, 1);
+width: auto;
+height: auto;
+position: relative;
+flex-shrink: 0;
+white-space: pre;
+flex-grow: 0;
+mix-blend-mode: normal;
+      }
+.Pixso-frame-139_134 {
+        width: auto;
+height: auto;
+position: relative;
+flex-shrink: 0;
+display: flex;
+flex-direction: column;
+gap: 10px;
+align-items: flex-start;
+mix-blend-mode: normal;
+      }
+.Pixso-rectangle-107_410 {
+        width: 100%;
+height: 100%;
+position: relative;
+flex-shrink: 0;
+background-color: rgba(255, 255, 255, 1);
+mix-blend-mode: normal;
+      }
+.stroke-wrapper-107_410 {
+        position: relative;
+width: 220px;
+height: 32px;
+flex-shrink: 0;
+      }
+.stroke-107_410 {
+        position: absolute;
+inset: 0px;
+border-radius: 0px 0px 0px 0px;
+pointer-events: none;
+border-width: 0px 2px 2px 0px;
+border-style: solid;
+box-sizing: border-box;
+border-color: rgba(255, 255, 255, 1);
+      }
+.shadow-blend-unknown-0 {
+        position: absolute;
+inset: 0;
+box-shadow: 3px 3px 2px 0px rgba(0, 0, 0, 0.6) inset;
+pointer-events: none;
+mix-blend-mode: normal;
+      }
+.Pixso-frame-107_418 {
+        width: 35px;
+height: 15px;
+position: relative;
+flex-shrink: 0;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: flex-start;
+mix-blend-mode: normal;
+      }
+.frame-content-107_418 {
+        display: flex;
+flex-direction: column;
+align-items: flex-start;
+justify-content: center;
+width: 100%;
+height: 100%;
+position: relative;
+      }
+.Pixso-paragraph-107_419 {
+        font-size: 12px;
+font-family: "Retro Gaming-Regular";
+font-weight: 400;
+text-align: center;
+display: flex;
+flex-direction: column;
+justify-content: center;
+letter-spacing: 0em;
+text-decoration: none;
+color: rgba(0, 0, 0, 1);
+width: 35px;
+height: 15px;
+position: relative;
+flex-shrink: 0;
+mix-blend-mode: normal;
+      }
+.Pixso-frame-125_157 {
+        width: 220px;
+height: auto;
+position: relative;
+flex-shrink: 0;
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+mix-blend-mode: normal;
+      }
+.frame-content-125_157 {
+        display: flex;
+flex-direction: row;
+gap: 4px;
+align-items: center;
+justify-content: center;
+width: 100%;
+position: relative;
+      }
+.Pixso-frame-125_161 {
+        width: 100%;
+height: 100%;
+position: relative;
+flex-shrink: 0;
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 11px 8px 11px 8px;
+background-color: rgba(255, 255, 255, 1);
+mix-blend-mode: normal;
+      }
+.stroke-wrapper-125_161 {
+        position: relative;
+width: 96px;
+height: 32px;
+display: flex;
+flex-shrink: 0;
+      }
+.stroke-125_161 {
+        position: absolute;
+inset: 0px;
+border-radius: 0px 0px 0px 0px;
+pointer-events: none;
+border-width: 0px 2px 2px 0px;
+border-style: solid;
+box-sizing: border-box;
+border-color: rgba(255, 255, 255, 1);
+      }
+.Pixso-frame-125_155 {
+        width: 20px;
+height: 32px;
+position: relative;
+flex-shrink: 0;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+mix-blend-mode: normal;
+      }
+.frame-content-125_155 {
+        display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+width: 100%;
+height: 100%;
+position: relative;
+      }
+.Pixso-paragraph-125_154 {
+        font-size: 15px;
+font-family: "Retro Gaming-Regular";
+font-weight: 400;
+text-align: center;
+display: flex;
+flex-direction: column;
+justify-content: center;
+letter-spacing: 0.019999999552965164em;
+text-decoration: none;
+color: rgba(0, 0, 0, 1);
+width: 100%;
+height: auto;
+position: relative;
+flex-shrink: 0;
+flex-grow: 0;
+mix-blend-mode: normal;
+      }
+.Pixso-frame-125_162 {
+        width: 100%;
+height: 100%;
+position: relative;
+flex-shrink: 0;
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 11px 8px 11px 8px;
+background-color: rgba(255, 255, 255, 1);
+mix-blend-mode: normal;
+      }
+.stroke-wrapper-125_162 {
+        position: relative;
+width: 96px;
+height: 32px;
+display: flex;
+flex-shrink: 0;
+      }
+.stroke-125_162 {
+        position: absolute;
+inset: 0px;
+border-radius: 0px 0px 0px 0px;
+pointer-events: none;
+border-width: 0px 2px 2px 0px;
+border-style: solid;
+box-sizing: border-box;
+border-color: rgba(255, 255, 255, 1);
+      }
+.Pixso-frame-107_423 {
+        width: 38px;
+height: 15px;
+position: relative;
+flex-shrink: 0;
+display: flex;
+flex-direction: row;
+align-items: center;
+mix-blend-mode: normal;
+      }
+.frame-content-107_423 {
+        display: flex;
+flex-direction: row;
+align-items: center;
+width: 100%;
+height: 100%;
+position: relative;
+      }
+.Pixso-paragraph-107_421 {
+        font-size: 12px;
+font-family: "Retro Gaming-Regular";
+font-weight: 400;
+text-align: center;
+display: flex;
+flex-direction: column;
+justify-content: center;
+letter-spacing: 0em;
+text-decoration: none;
+color: rgba(0, 0, 0, 1);
+width: 38px;
+height: 15px;
+position: relative;
+flex-shrink: 0;
+mix-blend-mode: normal;
+      }
+.Pixso-frame-139_135 {
+        width: auto;
+height: auto;
+position: relative;
+flex-shrink: 0;
+display: flex;
+flex-direction: column;
+gap: 10px;
+align-items: flex-start;
+mix-blend-mode: normal;
+      }
+.Pixso-rectangle-107_413 {
+        width: 100%;
+height: 100%;
+position: relative;
+flex-shrink: 0;
+background-color: rgba(255, 255, 255, 1);
+mix-blend-mode: normal;
+      }
+.stroke-wrapper-107_413 {
+        position: relative;
+width: 220px;
+height: 100px;
+flex-shrink: 0;
+      }
+.stroke-107_413 {
+        position: absolute;
+inset: 0px;
+border-radius: 0px 0px 0px 0px;
+pointer-events: none;
+border-width: 0px 2px 2px 0px;
+border-style: solid;
+box-sizing: border-box;
+border-color: rgba(255, 255, 255, 1);
+      }
+
+
+.Pixso-instance-107_429 .Pixso-symbol-47_17  {
+        width: 35px;
+height: 15px;
+overflow: hidden;
+position: relative;
+flex-shrink: 0;
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 4px 4px 4px 4px;
+background-color: rgba(176.1298370361328, 176.1298370361328, 176.1298370361328, 1);
+      }
+.Pixso-instance-107_429 .Pixso-paragraph-45_10  {
+        font-size: 12px;
+font-family: "Retro Gaming-Regular";
+font-weight: 400;
+text-align: center;
+display: flex;
+flex-direction: column;
+justify-content: center;
+letter-spacing: 0em;
+color: rgba(0, 0, 0, 1);
+width: auto;
+height: auto;
+position: relative;
+flex-shrink: 0;
+white-space: pre;
+flex-grow: 0;
+      }
