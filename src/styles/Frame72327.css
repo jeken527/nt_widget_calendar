@@ -21,19 +21,20 @@
 }
 
 /* ==========================================
-   2. 위젯 전체 껍데기 사이즈 강제 고정 (피그마 W 515, H 366)
+   2. 위젯 전체 껍데기 사이즈 강제 고정 (피그마 원본 W515 H366)
    ========================================== */
 .scroll-container {
     width: 515px !important;
     height: 366px !important;
     margin: 0 auto; /* 화면 중앙 정렬 */
     position: relative;
+    overflow: hidden; /* 스크롤바 숨김 */
 }
 
 .stroke-wrapper-72_327 {
     position: relative;
-    width: 515px !important;
-    height: 366px !important;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-shrink: 0;
 }
@@ -68,39 +69,41 @@
 }
 
 /* ==========================================
-   3. 위젯 내부 메뉴 & 버튼 사이즈 영구 고정
+   3. 🚨 원본 메뉴 위치 복구 (제가 망쳤던 부분) 🚨
    ========================================== */
-
-/* 메뉴 4개를 감싸는 오토레이아웃 상자 (W324, H28, 패딩 위아래 1, 간격 4) */
 .Pixso-frame-52_30 {
-    width: 324px !important;
-    height: 28px !important;
-    margin: 0 auto !important; /* 가운데 정렬 */
+    width: 324px;
+    height: 28px;
+    position: relative;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    mix-blend-mode: normal;
 }
+
 .frame-content-52_30 {
-    display: flex !important;
-    flex-direction: row !important;
-    padding: 1px 0px !important; /* 위아래 1px, 양옆 0px */
-    gap: 4px !important;         /* 버튼 사이 간격 4px */
-    justify-content: center !important;
-    align-items: center !important;
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+    padding: 1px 0px 1px 0px;
+    width: 100%;
+    height: 100%;
+    position: relative;
 }
 
-/* 개별 메뉴 버튼 4개 강제 고정 (W78, H25) + 멋대로 늘어나는 설정 파괴 */
-.Pixso-instance-52_20, .Pixso-instance-52_23, 
-.Pixso-instance-52_26, .Pixso-instance-52_28,
-[class*="Pixso-instance-2_188"], [class*="Pixso-instance-2_170"], 
-[class*="Pixso-instance-2_176"], [class*="Pixso-instance-2_186"] {
-    width: 78px !important;
-    height: 25px !important;
-    position: relative !important; /* 억지로 좌표에 고정시킨 설정 해제 */
-    left: auto !important;
-    top: auto !important;
-    flex-shrink: 0 !important; /* 줄어들지 않음 */
-    flex-grow: 0 !important;   /* 늘어나지 않음 */
-}
+/* 유저님이 설계하신 절대 위치(Absolute) 좌표 복구로 겹침 현상 완벽 해결! */
+.Pixso-instance-52_20 { width: 78px; height: 25px; position: absolute; left: 0px; top: 1px; }
+.Pixso-instance-52_23 { width: 78px; height: 25px; position: absolute; left: 82px; top: 1px; }
+.Pixso-instance-52_26 { width: 78px; height: 25px; position: absolute; left: 164px; top: 1px; }
+.Pixso-instance-52_28 { width: 78px; height: 25px; position: absolute; left: 246px; top: 1px; }
 
-/* 달력 월 이동 버튼 <, > 강제 고정 (W22, H22) */
+/* ==========================================
+   4. 달력 월 이동 버튼 <, > 강제 고정
+   ========================================== */
 .Pixso-instance-58_13, 
 .Pixso-instance-129_172 {
     width: 22px !important;
