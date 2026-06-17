@@ -69,38 +69,61 @@
 }
 
 /* ==========================================
-   3. 🚨 원본 메뉴 위치 복구 (제가 망쳤던 부분) 🚨
+   3. 위젯 내부 메뉴 & 버튼 사이즈 영구 고정 (Flexbox 우회 방식)
    ========================================== */
+
+/* 메뉴 4개를 감싸는 상자 (W324, H28) */
 .Pixso-frame-52_30 {
-    width: 324px;
-    height: 28px;
-    position: relative;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    mix-blend-mode: normal;
+    width: 324px !important;
+    height: 28px !important;
+    margin: 0 auto !important; /* 전체 프레임(515px)의 정중앙에 배치 */
 }
 
+/* 절대 위치(Absolute)를 버리고, Flexbox의 4px 간격(gap)으로 딱 맞게 정렬! */
 .frame-content-52_30 {
-    display: flex;
-    flex-direction: row;
-    gap: 4px;
-    align-items: center;
-    justify-content: center;
-    padding: 1px 0px 1px 0px;
-    width: 100%;
-    height: 100%;
-    position: relative;
+    display: flex !important;
+    flex-direction: row !important;
+    padding: 1px 0px !important;
+    gap: 4px !important; /* 78px * 4개 + 4px * 3개 = 정확히 324px */
+    justify-content: flex-start !important;
+    align-items: center !important;
+    width: 100% !important;
 }
 
-/* 유저님이 설계하신 절대 위치(Absolute) 좌표 복구로 겹침 현상 완벽 해결! */
-.Pixso-instance-52_20 { width: 78px; height: 25px; position: absolute; left: 0px; top: 1px; }
-.Pixso-instance-52_23 { width: 78px; height: 25px; position: absolute; left: 82px; top: 1px; }
-.Pixso-instance-52_26 { width: 78px; height: 25px; position: absolute; left: 164px; top: 1px; }
-.Pixso-instance-52_28 { width: 78px; height: 25px; position: absolute; left: 246px; top: 1px; }
+/* 개별 메뉴 버튼 4개 강제 고정 (W78, H25) */
+.Pixso-instance-52_20, .Pixso-instance-52_23, 
+.Pixso-instance-52_26, .Pixso-instance-52_28 {
+    position: static !important; /* 말썽을 일으키던 절대 위치 완전 해제 */
+    width: 78px !important;
+    height: 25px !important;
+    flex-basis: 78px !important; /* 플렉스 박스 내에서 찌그러짐 방지 */
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    margin: 0 !important;
+}
 
+/* 달력 월 이동 화살표 버튼 <, > 강제 고정 (W22, H22) */
+.Pixso-instance-58_13, 
+.Pixso-instance-129_172 {
+    width: 22px !important;
+    height: 22px !important;
+    flex-basis: 22px !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0 !important; /* 불필요한 여백 파괴 */
+    box-sizing: border-box !important;
+}
+
+/* 내부 텍스트(<, >)의 줄간격(line-height)이 박스를 직사각형으로 늘리는 현상 차단 */
+.Pixso-paragraph-2_44, 
+.Pixso-paragraph-2_40 {
+    line-height: 1 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
 /* ==========================================
    4. 달력 월 이동 버튼 <, > 강제 고정
    ========================================== */
