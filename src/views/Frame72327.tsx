@@ -9,9 +9,11 @@ import Datecomponents from "@/components/Datecomponents";
 import Dateselectbutton1 from "@/components/Dateselectbutton1";
 import Dateselectbutton2 from "@/components/Dateselectbutton2";
 
-// 스타일 시트 임포트 (추가된 팝업창 CSS 포함)
+// 스타일 시트 임포트 (추가된 CSS 모두 포함)
 import "@/styles/Frame72327.css";
 import "@/styles/Frame107433.css"; 
+import "@/styles/Frame97172.css"; 
+import "@/styles/Frame120147.css"; 
 
 declare global {
     interface Window {
@@ -20,7 +22,6 @@ declare global {
     }
 }
 
-// 구글 API 키 정보
 const CLIENT_ID = "930243544712-7j81q7c4d7885v43u1nqlmgbdtf85oat.apps.googleusercontent.com";
 const SCOPES = "https://www.googleapis.com/auth/calendar";
 
@@ -43,8 +44,9 @@ const Frame72327 = () => {
     const [button1state_129_172, setButton1state_129_172] = useState("default");
     const [transitionConfig52_20, setTransitionConfig52_20] = useState<any>({});
     
-    // 모달창 OK 버튼 상태
+    // 추가/조회 모달 버튼 상태
     const [button1state_107_429, setButton1state_107_429] = useState("default");
+    const [button1state_120_141, setButton1state_120_141] = useState("default");
 
     // ----------------------------------------------------
     // 2. 엔진 상태 (데이터 및 팝업창 컨트롤)
@@ -52,16 +54,19 @@ const Frame72327 = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedRegion, setSelectedRegion] = useState("KR");
     const [holidays, setHolidays] = useState<any[]>([]);
-    const [events, setEvents] = useState<any[]>([]); // 개인 일정 데이터 추가
+    const [events, setEvents] = useState<any[]>([]); 
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const tokenClientRef = useRef<any>(null);
 
-    // 팝업창(모달) 상태 관리
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    // 1번 모달: 일정 추가 모달창 (빈 날짜 클릭 시)
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [eventTitle, setEventTitle] = useState("");
     const [eventStartDate, setEventStartDate] = useState("");
     const [eventEndDate, setEventEndDate] = useState("");
     const [eventMemo, setEventMemo] = useState("");
+
+    // 2번 모달: 일정 확인/삭제 모달창 (일정 있는 날짜 클릭 시)
+    const [viewModalData, setViewModalData] = useState<{ isOpen: boolean; eventId?: string; title: string; isHoliday: boolean }>({ isOpen: false, title: "", isHoliday: false });
 
     // 구글 API 스크립트 로드
     useEffect(() => {
@@ -113,13 +118,11 @@ const Frame72327 = () => {
             const timeMin = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString();
             const timeMax = new Date(currentDate.getFullYear(), currentDate.getMonth() + 4, 0).toISOString();
             
-            // 공휴일 불러오기
             const holidayResp = await window.gapi.client.calendar.events.list({
                 calendarId: HOLIDAY_CALENDARS[selectedRegion], timeMin, timeMax, singleEvents: true,
             });
             setHolidays(holidayResp.result.items || []);
 
-            // 내 일정 불러오기
             const eventsResp = await window.gapi.client.calendar.events.list({
                 calendarId: "primary", timeMin, timeMax, singleEvents: true, orderBy: "startTime"
             });
@@ -131,7 +134,6 @@ const Frame72327 = () => {
 
     const handleLogin = () => tokenClientRef.current?.requestAccessToken({ prompt: "consent" });
 
-    // 일정 저장 함수 (OK 버튼 누를 때 실행)
     const handleSaveEvent = async () => {
         if (!eventTitle.trim() || !eventStartDate) return;
         try {
@@ -144,18 +146,25 @@ const Frame72327 = () => {
                     end: { date: eventEndDate || eventStartDate } 
                 }
             });
-            // 저장 성공 시 모달 닫기 및 초기화
             setEventTitle(""); setEventStartDate(""); setEventEndDate(""); setEventMemo("");
-            setIsModalOpen(false);
+            setIsAddModalOpen(false);
             fetchCalendarData();
         } catch (error) {}
     };
 
-    // 팝업 열기 함수
+    const handleDeleteEvent = async (eventId: string) => {
+        if (!window.confirm("DELETE SCHEDULE?")) return;
+        try {
+            await window.gapi.client.calendar.events.delete({ calendarId: "primary", eventId });
+            setViewModalData({ isOpen: false, title: "", isHoliday: false });
+            fetchCalendarData();
+        } catch (error) {}
+    };
+
     const openAddModal = (dateStr: string) => {
         setEventStartDate(dateStr);
         setEventEndDate(dateStr);
-        setIsModalOpen(true);
+        setIsAddModalOpen(true);
     };
 
     // ----------------------------------------------------
@@ -195,23 +204,35 @@ const Frame72327 = () => {
         
         const state = getDateState(item.date, true);
         
-        // 일정이 있는 날짜 렌더링
-        if (state === "my schedule") {
-            return (
-                <Dateselectbutton2 key={idx} dateselectnew2="my schedule" slot_146_536={
-                    <Datecomponents datestates="my schedule" slot_135_168={<p style={pStyle}>{day}</p>} />
-                } />
-            );
-        }
+        // 🎯 일정이 있는 날짜 렌더링 (새로 만든 보기/삭제 모달 연결)
         if (state === "holiday") {
             return (
-                <Dateselectbutton2 key={idx} dateselectnew2="holiday" slot_146_537={
-                    <Datecomponents datestates="holiday" slot_62_28={<p style={pStyle}>{day}</p>} />
-                } />
+                <div key={idx} onClick={(e) => { 
+                    e.stopPropagation(); 
+                    const hol = holidays.find(h => (h.start?.date || h.start?.dateTime?.split("T")[0]) === dateStr);
+                    setViewModalData({ isOpen: true, title: hol?.summary || "공휴일", isHoliday: true }); 
+                }} style={{cursor:"pointer"}}>
+                    <Dateselectbutton2 dateselectnew2="holiday" slot_146_537={
+                        <Datecomponents datestates="holiday" slot_62_28={<p style={pStyle}>{day}</p>} />
+                    } />
+                </div>
+            );
+        }
+        if (state === "my schedule") {
+            return (
+                <div key={idx} onClick={(e) => { 
+                    e.stopPropagation(); 
+                    const evnt = events.find(e => (e.start?.date || e.start?.dateTime?.split("T")[0]) === dateStr);
+                    setViewModalData({ isOpen: true, eventId: evnt?.id, title: evnt?.summary || "일정", isHoliday: false }); 
+                }} style={{cursor:"pointer"}}>
+                    <Dateselectbutton2 dateselectnew2="my schedule" slot_146_536={
+                        <Datecomponents datestates="my schedule" slot_135_168={<p style={pStyle}>{day}</p>} />
+                    } />
+                </div>
             );
         }
 
-        // 일정이 없는 날짜(today, default) 렌더링 -> 클릭 시 팝업 오픈!
+        // 🎯 일정이 없는 날짜 렌더링 (기존 추가 모달 연결)
         if (state === "today") {
             return (
                 <div key={idx} onClick={() => openAddModal(dateStr)} style={{cursor:"pointer"}}>
@@ -241,7 +262,6 @@ const Frame72327 = () => {
                 <div className="Pixso-frame-72_327">
                     <div className="frame-content-72_327">
                         
-                        {/* 상단 로그인 연동 바 */}
                         <div id="45_8" className="Pixso-frame-45_8" onClick={handleLogin} style={{ cursor: "pointer" }}>
                             <div className="frame-content-45_8">
                                 <div id="129_166" className="Pixso-frame-129_166">
@@ -275,7 +295,6 @@ const Frame72327 = () => {
                             </div>
                         </div>
 
-                        {/* 메뉴 툴바 */}
                         <div id="52_30" className="Pixso-frame-52_30" style={{ position: "relative", zIndex: 9000, overflow: "visible" }}>
                             <div className="frame-content-52_30">
                                 
@@ -289,7 +308,6 @@ const Frame72327 = () => {
                                     slot_97_163={<Button2components button2state="default" click={(e) => { e.stopPropagation(); setSelectedRegion("US"); setRegionmenu_52_20("False"); }} slot_77_120={<p id="77_120_us" className="Pixso-paragraph-77_120" style={{cursor:"pointer", pointerEvents:"auto"}}>{"AMERICA"}</p>} />}
                                 />
 
-                                {/* 🎯 EDIT 버튼 클릭 시 오늘 날짜 기준으로 팝업 오픈! 🎯 */}
                                 <div onClick={() => openAddModal(new Date().toISOString().split("T")[0])} style={{cursor:"pointer"}}>
                                     <Editmenu
                                         id="52_23" className="Pixso-instance-52_23" editmenu="False"
@@ -338,7 +356,9 @@ const Frame72327 = () => {
                                             </div>
                                         </div>
                                     </div>
+
                                     <div id="68_322" className="Pixso-vector-68_322"></div>
+
                                     <div id="68_321" className="Pixso-frame-68_321">
                                         <div className="frame-content-68_321">
                                             <div id="66_320" className="Pixso-frame-66_320">
@@ -385,13 +405,12 @@ const Frame72327 = () => {
                 <div className="stroke-72_327"></div>
             </div>
 
-            {/* 🎯 전달해주신 Frame107433 원본 100% 이식 모달창 🎯 */}
-            {isModalOpen && (
+            {/* 🎯 1. 일정 추가 모달창 (빈 날짜 클릭 시 오픈) 🎯 */}
+            {isAddModalOpen && (
                 <div 
                     style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "rgba(0,0,0,0.6)", zIndex: 9999, display: "flex", justifyContent: "center", alignItems: "center" }}
-                    onClick={() => setIsModalOpen(false)} 
+                    onClick={() => setIsAddModalOpen(false)} 
                 >
-                    {/* 모달 본체 (크기 250px 고정) */}
                     <div style={{ width: "250px" }} onClick={(e) => e.stopPropagation()}>
                         <div id="107_433" className="stroke-wrapper-107_433">
                             <div className="Pixso-frame-107_433">
@@ -403,7 +422,6 @@ const Frame72327 = () => {
                                                     <p id="107_416" className="Pixso-paragraph-107_416">{"Title"}</p>
                                                 </div>
                                             </div>
-                                            {/* OK 버튼 (누르면 구글 캘린더 저장) */}
                                             <div onClick={handleSaveEvent} style={{ cursor: "pointer", pointerEvents: "auto" }}>
                                                 <Button1components
                                                     id="107_429" className="Pixso-instance-107_429" button1state={button1state_107_429}
@@ -413,7 +431,6 @@ const Frame72327 = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    {/* 1. Title 입력칸 (투명 input 덧댐) */}
                                     <div id="139_134" className="Pixso-frame-139_134">
                                         <div id="107_410" className="stroke-wrapper-107_410">
                                             <div className="Pixso-rectangle-107_410" style={{ position: "relative" }}>
@@ -426,7 +443,6 @@ const Frame72327 = () => {
                                     <div id="107_418" className="Pixso-frame-107_418">
                                         <div className="frame-content-107_418"><p id="107_419" className="Pixso-paragraph-107_419">{"Date"}</p></div>
                                     </div>
-                                    {/* 2. Date 입력칸 (투명 input 덧댐) */}
                                     <div id="125_157" className="Pixso-frame-125_157">
                                         <div className="frame-content-125_157">
                                             <div id="125_161" className="stroke-wrapper-125_161">
@@ -451,7 +467,6 @@ const Frame72327 = () => {
                                     <div id="107_423" className="Pixso-frame-107_423">
                                         <div className="frame-content-107_423"><p id="107_421" className="Pixso-paragraph-107_421">{"Memo"}</p></div>
                                     </div>
-                                    {/* 3. Memo 입력칸 (투명 textarea 덧댐) */}
                                     <div id="139_135" className="Pixso-frame-139_135">
                                         <div id="107_413" className="stroke-wrapper-107_413">
                                             <div className="Pixso-rectangle-107_413" style={{ position: "relative" }}>
@@ -464,6 +479,46 @@ const Frame72327 = () => {
                                 </div>
                             </div>
                             <div className="stroke-107_433"></div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* 🎯 2. 일정 확인/삭제 모달창 (내 일정, 휴일 클릭 시 오픈) 🎯 */}
+            {viewModalData.isOpen && (
+                <div 
+                    style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "rgba(0,0,0,0.6)", zIndex: 9999, display: "flex", justifyContent: "center", alignItems: "center" }}
+                    onClick={() => setViewModalData({ isOpen: false, title: "", isHoliday: false })} 
+                >
+                    <div style={{ width: "auto" }} onClick={(e) => e.stopPropagation()}>
+                        <div id="120_147" className="stroke-wrapper-120_147">
+                            <div className="Pixso-frame-120_147">
+                                <div className="frame-content-120_147">
+                                    <div id="120_146" className="Pixso-frame-120_146">
+                                        <div className="frame-content-120_146">
+                                            {/* 타이틀 또는 '공휴일' 텍스트 표시 영역 */}
+                                            <div id="120_137" className="Pixso-frame-120_137">
+                                                <div className="frame-content-120_137">
+                                                    <p id="119_134" className="Pixso-paragraph-119_134" style={{ fontFamily: "Retro Gaming, DungGeunMo, monospace" }}>
+                                                        {viewModalData.title}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {/* DELETE 버튼 (휴일이 아닐 때만 노출) */}
+                                    {!viewModalData.isHoliday && (
+                                        <div onClick={() => { if (viewModalData.eventId) handleDeleteEvent(viewModalData.eventId); }} style={{ cursor: "pointer", pointerEvents: "auto" }}>
+                                            <Button1components
+                                                id="120_141" className="Pixso-instance-120_141" button1state={button1state_120_141}
+                                                mouseover={() => setButton1state_120_141("checked")}
+                                                slot_45_10={<p id="14_14" className="Pixso-paragraph-14_14" style={{ fontFamily: "Retro Gaming, monospace" }}>{"DELETE"}</p>}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="stroke-120_147"></div>
                         </div>
                     </div>
                 </div>
