@@ -1,0 +1,64 @@
+
+.scroll-container {
+        height: 100%;
+width: 100%;
+overflow: auto;
+      }
+.Pixso-frame-97_172 {
+        width: 100%;
+height: 100%;
+overflow: hidden;
+position: relative;
+flex-shrink: 0;
+border-radius: 5px 5px 5px 5px;
+mix-blend-mode: normal;
+      }
+.stroke-wrapper-97_172 {
+        position: relative;
+width: 100%;
+height: 315px;
+flex-shrink: 0;
+      }
+.stroke-97_172 {
+        position: absolute;
+inset: 0px;
+border-radius: 5px 5px 5px 5px;
+pointer-events: none;
+border-width: 1px;
+border-style: dashed;
+box-sizing: border-box;
+border-color: rgba(151, 71, 255, 1);
+      }
+.Pixso-instance-i97_171 {
+        width: 78px;
+height: 25px;
+      }
+.Pixso-instance-i97_170 {
+        width: 120px;
+height: 117px;
+      }
+
+
+.Pixso-instance-i97_171 .Pixso-symbol-97_171  {
+        width: 78px;
+height: 25px;
+position: absolute;
+left: 20px;
+top: 20px;
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+mix-blend-mode: normal;
+      }
+.Pixso-instance-i97_170 .Pixso-symbol-97_170  {
+        width: 120px;
+height: 117px;
+position: absolute;
+left: 20px;
+top: 178px;
+display: flex;
+flex-direction: column;
+gap: 2px;
+align-items: flex-start;
+mix-blend-mode: normal;
+      }
