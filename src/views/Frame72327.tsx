@@ -72,19 +72,16 @@ const Frame72327 = () => {
         return `${year}-${month}-${day}`;
     };
 
-    // 🎯 타겟 날짜가 이벤트 기간(시작~종료) 안에 포함되는지 판별하는 핵심 함수
     const isDateCovered = (targetDateStr: string, event: any) => {
         const start = event.start?.date || event.start?.dateTime?.substring(0, 10);
         const end = event.end?.date || event.end?.dateTime?.substring(0, 10);
         
         if (!start) return false;
         
-        // 종일 일정(date)의 경우 구글은 종료일을 하루 더 뒤로(Exclusive) 잡아둡니다.
         if (event.end?.date) {
             if (start === end) return targetDateStr === start;
             return targetDateStr >= start && targetDateStr < end;
         } else {
-            // 시간 단위 일정(dateTime)은 해당 날짜 포함(Inclusive)
             if (!end) return targetDateStr === start;
             return targetDateStr >= start && targetDateStr <= end;
         }
@@ -159,13 +156,12 @@ const Frame72327 = () => {
 
     const handleLogin = () => tokenClientRef.current?.requestAccessToken({ prompt: "consent" });
 
-    // 🎯 일정 저장 로직: 유저가 적은 날짜를 구글 캘린더 규칙에 맞게 +1일 보정하여 저장
     const handleSaveEvent = async () => {
         if (!eventTitle.trim() || !eventStartDate) return;
         try {
             let targetEndDate = eventEndDate || eventStartDate;
             const d = new Date(targetEndDate);
-            d.setDate(d.getDate() + 1); // 구글 캘린더 종일 일정 규격(+1일)
+            d.setDate(d.getDate() + 1); 
             const googleExclusiveEnd = getLocalDateStr(d);
 
             await window.gapi.client.calendar.events.insert({
@@ -212,13 +208,11 @@ const Frame72327 = () => {
         return grid;
     };
 
-    // 🎯 특정 칸(Target Date)이 어떤 상태(my schedule / holiday)인지 검사
     const getDateState = (targetDate: Date, isCurrentMonth: boolean) => {
         if (!isCurrentMonth) return "disable";
         const dateStr = getLocalDateStr(targetDate);
         const todayStr = getLocalDateStr(new Date());
 
-        // 배열의 이벤트들을 순회하며 해당 날짜가 범위 내에 들어있는지 확인
         if (holidays.some(h => isDateCovered(dateStr, h))) return "holiday";
         if (events.some(e => isDateCovered(dateStr, e))) return "my schedule";
         if (dateStr === todayStr) return "today";
@@ -261,7 +255,6 @@ const Frame72327 = () => {
         const pClass = getPClass(state);
         const visualState = (hoveredDateStr === dateStr) ? "checked" : state; 
         
-        // 🎯 클릭했을 때도 이벤트 범위를 검색해서 팝업에 정보 띄우기
         const handleClick = (e: any) => {
             e.stopPropagation();
             if (state === "holiday") {
@@ -560,11 +553,21 @@ const Frame72327 = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    {!viewModalData.isHoliday && (
-                                        <div className="hover-target" onClick={() => { if (viewModalData.eventId) handleDeleteEvent(viewModalData.eventId); }} style={{ display: "contents" }}>
+                                    
+                                    {/* 🎯 [수정 1] DELETE 버튼을 조건 없이 렌더링하되 휴일일 때만 투명인간(visibility: hidden)으로 만들어 밸런스를 맞춥니다 */}
+                                    <div 
+                                        className="hover-target" 
+                                        onClick={() => { if (!viewModalData.isHoliday && viewModalData.eventId) handleDeleteEvent(viewModalData.eventId); }} 
+                                        style={{ display: "contents" }}
+                                    >
+                                        <div style={{ 
+                                            visibility: viewModalData.isHoliday ? "hidden" : "visible", 
+                                            pointerEvents: viewModalData.isHoliday ? "none" : "auto" 
+                                        }}>
                                             <Button1components id="120_141" className="Pixso-instance-120_141" button1state="default" slot_45_10={<p id="14_14" className="Pixso-paragraph-14_14" style={{pointerEvents:"none", margin: 0}}>{"DELETE"}</p>} />
                                         </div>
-                                    )}
+                                    </div>
+
                                 </div>
                             </div>
                             <div className="stroke-120_147"></div>
@@ -579,9 +582,12 @@ const Frame72327 = () => {
                     style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "rgba(0,0,0,0.6)", zIndex: 99999, display: "flex", justifyContent: "center", alignItems: "center" }}
                     onClick={() => setIsSearchModalOpen(false)} 
                 >
-                    <div style={{ width: "250px" }} onClick={(e) => e.stopPropagation()}>
-                        <div className="stroke-wrapper-120_147">
-                            <div className="Pixso-frame-120_147" style={{ justifyContent: "flex-start" }}>
+                    {/* 🎯 [수정 2] 가로폭을 280px로 늘려줍니다 */}
+                    <div style={{ width: "280px" }} onClick={(e) => e.stopPropagation()}>
+                        
+                        {/* 🎯 [수정 3] 검색 결과가 늘어나면 높이도 알아서 쭉쭉 늘어나게 height: "auto"를 줍니다 */}
+                        <div className="stroke-wrapper-120_147" style={{ height: "auto", minHeight: "200px" }}>
+                            <div className="Pixso-frame-120_147" style={{ justifyContent: "flex-start", height: "auto" }}>
                                 <div className="frame-content-120_147" style={{ alignItems: "stretch", padding: "12px" }}>
                                     
                                     <div id="119_132" className="Pixso-frame-119_132">
