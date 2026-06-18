@@ -7,26 +7,30 @@
     font-weight: normal;
     font-style: normal;
 }
+
 @font-face {
     font-family: 'DungGeunMo';
     src: url('./DungGeunMo.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
+
+/* 영어가 먼저, 한글은 둥근모꼴로 자동 혼합 적용 */
 .scroll-container * {
     font-family: 'Retro Gaming', 'DungGeunMo', monospace !important;
 }
 
 /* ==========================================
-   2. 위젯 전체 껍데기 사이즈 강제 고정 
+   2. 위젯 전체 껍데기 사이즈 강제 고정 (피그마 원본 W515 H366)
    ========================================== */
 .scroll-container {
     width: 515px !important;
     height: 366px !important;
-    margin: 0 auto; 
+    margin: 0 auto; /* 위젯 자체는 웹페이지 중앙에 오도록 유지 */
     position: relative;
-    overflow: hidden; 
+    overflow: hidden; /* 스크롤바 숨김 */
 }
+
 .stroke-wrapper-72_327 {
     position: relative;
     width: 515px !important;
@@ -34,6 +38,7 @@
     display: flex;
     flex-shrink: 0;
 }
+
 .Pixso-frame-72_327 {
     width: 100%;
     height: 100%;
@@ -46,7 +51,10 @@
     align-items: flex-start;
     box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.7);
     background-color: rgba(221, 221, 221, 1);
+    mix-blend-mode: normal;
 }
+
+/* 피그마 설정값 완벽 반영: 패딩(L:7, T:5, R:3, B:8) 및 간격 2.5px */
 .frame-content-72_327 {
     display: flex;
     flex-direction: column;
@@ -61,26 +69,47 @@
 }
 
 /* ==========================================
-   3. 메뉴바 왼쪽 정렬 및 간격 고정
+   3. 🎯 메뉴바 왼쪽 정렬 및 클릭 시 버튼 내려앉음 현상 원천 차단 🎯
    ========================================== */
+
+/* 1) 메뉴바 상자: margin: 0 auto를 지우고 margin: 0을 주어 왼쪽 정렬로 밀착 */
 .Pixso-frame-52_30 {
     width: 324px !important;
     height: 28px !important;
-    margin: 0 !important; /* 왼쪽 정렬 */
+    margin: 0 !important; /* 왼쪽 정렬 완료! */
 }
+
 .frame-content-52_30 {
     display: flex !important;
     flex-direction: row !important;
     padding: 1px 0px !important;
     gap: 4px !important; 
     justify-content: flex-start !important;
-    align-items: flex-start !important; 
+    align-items: flex-start !important; /* 🎯 중요: 드롭다운이 열려도 무조건 상단 기준 칼정렬 고정 */
     width: 100% !important;
 }
 
-/* 버튼 4개 틀 고정 (드롭다운 관련 설정은 전부 뺐습니다!) */
-.Pixso-instance-52_20, .Pixso-instance-52_23, 
-.Pixso-instance-52_26, .Pixso-instance-52_28 {
+/* 2) REGION 버튼 특수 보호: 드롭다운이 열려도 고정 높이 25px를 유지하여 무빙 차단 */
+.Pixso-instance-52_20 {
+    position: relative !important;
+    width: 78px !important;
+    height: 25px !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    margin: 0 !important;
+    left: auto !important;
+    top: auto !important;
+    overflow: visible !important; /* 🎯 중요: 드롭다운 목록이 25px 상자 밖으로 튀어나와 보일 수 있게 허용 */
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
+}
+
+/* 3) EDIT, SEARCH, RESET 버튼 규격 고정 */
+.Pixso-instance-52_23,
+.Pixso-instance-52_26,
+.Pixso-instance-52_28 {
     position: relative !important;
     width: 78px !important;
     height: 25px !important;
@@ -90,11 +119,47 @@
     margin: 0 !important;
     left: auto !important;
     top: auto !important;
-    display: block !important;
 }
 
+/* 기성 피그마 껍데기들의 뒤틀린 절대 좌표 전면 무효화 */
+.Pixso-symbol-97_172, .Pixso-symbol-107_318, .Pixso-symbol-107_372, .Pixso-symbol-143_270,
+.Pixso-symbol-97_171, .Pixso-symbol-107_319, .Pixso-symbol-107_371, .Pixso-symbol-143_269,
+.Pixso-instance-2_188, .Pixso-instance-2_170, .Pixso-instance-2_176, .Pixso-instance-2_186 {
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important;
+    left: auto !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    margin: 0 !important;
+}
+
+/* 4) 🎯 열린 드롭다운 메뉴판만 콕 집어서 버튼 바로 밑에 공중부양 (레이아웃 간섭 무효화) */
+
+/* ① 버튼과 목록을 모두 품은 껍데기(#97_170)는 절대 뚱뚱해지지 않게 25px로 강제 고정! (아래로 밀림 방지) */
+[class*="Pixso-symbol-97_170"], 
+.Pixso-symbol-97_170,
+[id="97_170"] {
+    position: relative !important; /* 공중부양 해제! 메뉴바 안에서 제자리 유지 */
+    height: 25px !important;
+    max-height: 25px !important;
+    display: block !important;
+    width: 100% !important;
+}
+
+/* ② 진짜 드롭다운 알맹이(#97_160)만 콕 집어서 공중부양! (메뉴 분해 현상 방지) */
+.stroke-wrapper-97_160,
+[id="97_160"] {
+    position: absolute !important;
+    top: 25px !important; /* REGION 버튼 높이(25px) 바로 아래에 둥둥 뜸 */
+    left: 0px !important;
+    width: 120px !important; /* 드롭다운 메뉴판 가로폭 고정 */
+    z-index: 99999 !important; /* 달력 숫자를 가리고 가장 위층에 나타나도록 설정 */
+    background-color: transparent !important;
+}
 /* ==========================================
-   4. 화살표 <, > 버튼 정사각형 강제 교정
+   4. 🎯 화살표 <, > 버튼 정사각형 픽셀 강제 교정
    ========================================== */
 .Pixso-instance-58_13,
 .Pixso-instance-129_172 {
@@ -104,6 +169,8 @@
     flex-shrink: 0 !important;
     flex-grow: 0 !important;
 }
+
+/* 버튼 '내부'의 숨은 패딩을 파괴해야 직사각형으로 부푸는 현상 차단 */
 .Pixso-instance-58_13 [class*="Pixso-symbol"],
 .Pixso-instance-129_172 [class*="Pixso-symbol"] {
     padding: 0 !important; 
@@ -113,6 +180,8 @@
     justify-content: center !important;
     align-items: center !important;
 }
+
+/* 화살표 텍스트 위아래 숨은 여백 파괴 */
 .Pixso-paragraph-2_44, 
 .Pixso-paragraph-2_40 {
     line-height: 1 !important;
