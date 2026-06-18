@@ -322,17 +322,17 @@ const searchResults = searchQuery.trim()
                                 <div style={{ display: "flex", gap: "2px" }}>
                                     {/* 최소화 버튼 (_) - 22x22px 적용, public 폴더의 _.svg 사용 */}
                                     <div className="stroke-wrapper-8_14" style={{ width: "22px", height: "22px", position: "relative", backgroundColor: "#ddd", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                                        <img src="/_.svg" alt="minimize" style={{ width: "12px", height: "12px" }} />
+                                        <img src="/Line1.svg" alt="minimize" style={{ width: "12px", height: "12px" }} />
                                         <div className="stroke-8_14" style={{ position: "absolute", inset: 0, border: "1px solid #000", borderTopColor: "#fff", borderLeftColor: "#fff" }}></div>
                                     </div>
                                     {/* 최대화 버튼 (ㅁ) - 22x22px 적용, public 폴더의 Frame7.svg 사용 */}
                                     <div className="stroke-wrapper-8_14" style={{ width: "22px", height: "22px", position: "relative", backgroundColor: "#ddd", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                                        <img src="/Frame7.svg" alt="maximize" style={{ width: "12px", height: "12px" }} />
+                                        <img src="/Rectangle1.svg" alt="maximize" style={{ width: "12px", height: "12px" }} />
                                         <div className="stroke-8_14" style={{ position: "absolute", inset: 0, border: "1px solid #000", borderTopColor: "#fff", borderLeftColor: "#fff" }}></div>
                                     </div>
                                     {/* 닫기 버튼 (X) - 22x22px 적용, public 폴더의 Line.svg 사용 */}
                                     <div className="stroke-wrapper-8_14" style={{ width: "22px", height: "22px", position: "relative", backgroundColor: "#ddd", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                                        <img src="/Line.svg" alt="close" style={{ width: "12px", height: "12px" }} />
+                                        <img src="/Frame7.svg" alt="close" style={{ width: "12px", height: "12px" }} />
                                         <div className="stroke-8_14" style={{ position: "absolute", inset: 0, border: "1px solid #000", borderTopColor: "#fff", borderLeftColor: "#fff" }}></div>
                                     </div>
                                 </div>
