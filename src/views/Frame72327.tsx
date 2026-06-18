@@ -389,9 +389,33 @@ const Frame72327 = () => {
                                     slot_97_159={<div className="hover-target hover-shadow-color" onClick={(e) => { e.stopPropagation(); setRegionmenu_52_20("False"); }}><Button1components className="Pixso-instance-2_188" button1state="default" slot_45_10={<p id="2_189_exp" className="Pixso-paragraph-2_189" style={{pointerEvents:"none", margin: 0}}>{"REGION"}</p>} /></div>}
                                     
                                     /* 드롭다운 하위 메뉴는 배경색만 처리 */
-                                    slot_97_161={<div className="hover-target hover-color" onClick={(e) => { e.stopPropagation(); setSelectedRegion("KR"); setRegionmenu_52_20("False"); }}><Button2components className="Pixso-instance-97_161" button2state="default" slot_77_120={<p id="77_120_kr" className="Pixso-paragraph-77_120" style={{pointerEvents:"none", margin: 0}}>{"KOREA"}</p>} /></div>}
-                                    slot_97_162={<div className="hover-target hover-color" onClick={(e) => { e.stopPropagation(); setSelectedRegion("JP"); setRegionmenu_52_20("False"); }}><Button2components className="Pixso-instance-97_162" button2state="default" slot_77_120={<p id="77_120_jp" className="Pixso-paragraph-77_120" style={{pointerEvents:"none", margin: 0}}>{"JAPAN"}</p>} /></div>}
-                                    slot_97_163={<div className="hover-target hover-color" onClick={(e) => { e.stopPropagation(); setSelectedRegion("US"); setRegionmenu_52_20("False"); }}><Button2components className="Pixso-instance-97_163" button2state="default" slot_77_120={<p id="77_120_us" className="Pixso-paragraph-77_120" style={{pointerEvents:"none", margin: 0}}>{"AMERICA"}</p>} /></div>}
+slot_97_161={
+    <div className="hover-target hover-color" onClick={(e) => { 
+        e.stopPropagation(); 
+        setSelectedRegion("KR");            /* 🎯 국가를 한국으로 변경 */
+        setRegionmenu_52_20("False");       /* 🎯 클릭 시 드롭다운 자동으로 닫기 */
+    }}>
+        <Button2components className="Pixso-instance-97_161" button2state="default" slot_77_120={<p id="77_120_kr" className="Pixso-paragraph-77_120" style={{pointerEvents:"none", margin: 0}}>{"KOREA"}</p>} />
+    </div>
+}
+slot_97_162={
+    <div className="hover-target hover-color" onClick={(e) => { 
+        e.stopPropagation(); 
+        setSelectedRegion("JP");            /* 🎯 국가를 일본으로 변경 */
+        setRegionmenu_52_20("False");       /* 🎯 클릭 시 드롭다운 자동으로 닫기 */
+    }}>
+        <Button2components className="Pixso-instance-97_162" button2state="default" slot_77_120={<p id="77_120_jp" className="Pixso-paragraph-77_120" style={{pointerEvents:"none", margin: 0}}>{"JAPAN"}</p>} />
+    </div>
+}
+slot_97_163={
+    <div className="hover-target hover-color" onClick={(e) => { 
+        e.stopPropagation(); 
+        setSelectedRegion("US");            /* 🎯 국가를 미국으로 변경 */
+        setRegionmenu_52_20("False");       /* 🎯 클릭 시 드롭다운 자동으로 닫기 */
+    }}>
+        <Button2components className="Pixso-instance-97_163" button2state="default" slot_77_120={<p id="77_120_us" className="Pixso-paragraph-77_120" style={{pointerEvents:"none", margin: 0}}>{"AMERICA"}</p>} />
+    </div>
+}
                                 />
                                 <Editmenu
                                     id="52_23" className="Pixso-instance-52_23 z-30" editmenu="False"
