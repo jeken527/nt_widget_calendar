@@ -1,86 +1,86 @@
-import Button1components from "@/components/Button1components";
 import { useState } from "react";
-import { withStopPropagation } from "@/utils/utils";
-import { motion, AnimatePresence } from "motion/react";
-import Button2components from "@/components/Button2components";
+import { motion, AnimatePresence } from "framer-motion";
 import "@/styles/Regionmenu.css";
 
 interface RegionmenuProps {
-    regionmenu?: string;
     id?: string;
     className?: string;
-    click?: (e: any) => void;
-    transitionConfig?: any;
-    slot_97_144?: React.ReactNode;
-    slot_97_159?: React.ReactNode;
-    slot_97_161?: React.ReactNode;
-    slot_97_162?: React.ReactNode;
-    slot_97_163?: React.ReactNode;
+    regionmenu?: string;
+    slot_97_144?: React.ReactNode; // False(닫힘) 상태일 때의 REGION 버튼
+    slot_97_159?: React.ReactNode; // True(열림) 상태일 때의 REGION 버튼 (유령 버튼화 방지용)
+    slot_97_161?: React.ReactNode; // KOREA 버튼
+    slot_97_162?: React.ReactNode; // JAPAN 버튼
+    slot_97_163?: React.ReactNode; // AMERICA 버튼
 }
 
-const Regionmenu = (props: RegionmenuProps) => {
-    const {
-        regionmenu, id, className = "", click,
-        slot_97_144, slot_97_159, slot_97_161, slot_97_162, slot_97_163
-    } = props;
-
-    // 호버 상태 관리
-    const [button1state_97_144, setButton1state_97_144] = useState("default");
-    const [button2state_97_161, setButton2state_97_161] = useState("default");
-    const [button2state_97_162, setButton2state_97_162] = useState("default");
-    const [button2state_97_163, setButton2state_97_163] = useState("default");
-
+const Regionmenu = ({
+    regionmenu = "False",
+    slot_97_144,
+    slot_97_159,
+    slot_97_161,
+    slot_97_162,
+    slot_97_163,
+}: RegionmenuProps) => {
     return (
-        <div className={`component-97_172 ${className}`} id={id} onClick={withStopPropagation(click)}>
-            <div id="97_172" className="Pixso-symbol-97_172" style={{ position: 'relative', width: '100%', height: '100%' }}>
-                
-                {/* 1. 🎯 항상 얌전히 고정되어 있는 REGION 버튼 (애니메이션 밖으로 탈출!) */}
-                <div style={{ position: 'relative', zIndex: 10, width: '78px', height: '25px' }}>
-                    {regionmenu === "False" ? (
-                        slot_97_144 ?? (
-                            <Button1components id="97_144" className="Pixso-instance-97_144" button1state={button1state_97_144} mouseover={() => setButton1state_97_144("checked")} />
-                        )
-                    ) : (
-                        slot_97_159 ?? (
-                            <Button1components id="97_159" className="Pixso-instance-97_159" button1state="checked" />
-                        )
-                    )}
-                </div>
+        /* 껍데기는 relative로 고정하여 하위 드롭다운의 기준점이 되게 합니다 */
+        <div style={{ position: "relative", display: "inline-block", width: "78px", height: "25px" }}>
+            
+            <AnimatePresence mode="wait">
+                {regionmenu === "False" ? (
+                    <motion.div
+                        key="false"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0 }}
+                        style={{ position: "absolute", top: 0, left: 0 }}
+                    >
+                        {/* 평소 상태의 REGION 버튼 */}
+                        {slot_97_144}
+                    </motion.div>
+                ) : (
+                    <motion.div
+                        key="true"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0 }}
+                        style={{ position: "absolute", top: 0, left: 0, overflow: "visible" }}
+                    >
+                        {/* 🎯 핵심 수정: True 상태일 때 버튼이 이중으로 겹치지 않도록, 
+                            기본 REGION 버튼의 모습(slot_97_159)을 그대로 노출하되 
+                            그 바로 아래 공간(top: 25px)에 드롭다운 메뉴 리스트 상자만 공중에 띄웁니다! */}
+                        <div>
+                            {slot_97_159}
+                        </div>
 
-                {/* 2. 🎯 드롭다운 메뉴판만 콕 집어서 애니메이션 적용! */}
-                <AnimatePresence>
-                    {regionmenu === "True" && (
-                        <motion.div
-                            key="dropdown-menu"
-                            initial={{ opacity: 0, y: -5 }} /* 위에서 아래로 살짝 내려오는 애니메이션 */
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -5 }}
-                            transition={{ duration: 0.15, ease: "easeOut" }}
-                            style={{ position: 'absolute', top: '25px', left: '0px', zIndex: 99999 }}
-                        >
-                            <div id="97_160" className="stroke-wrapper-97_160">
-                                <div className="Pixso-frame-97_160">
-                                    <div className="shadow-blend-unknown-0"></div>
-                                    <div className="frame-content-97_160">
-                                        {slot_97_161 ?? (
-                                            <Button2components id="97_161" className="Pixso-instance-97_161" button2state={button2state_97_161} mouseover={() => setButton2state_97_161("checked")} />
-                                        )}
-                                        {slot_97_162 ?? (
-                                            <Button2components id="97_162" className="Pixso-instance-97_162" button2state={button2state_97_162} mouseover={() => setButton2state_97_162("checked")} slot_77_120={<p id="77_120" className="Pixso-paragraph-77_120">{"JAPAN"}</p>} />
-                                        )}
-                                        {slot_97_163 ?? (
-                                            <Button2components id="97_163" className="Pixso-instance-97_163" button2state={button2state_97_163} mouseover={() => setButton2state_97_163("checked")} slot_77_120={<p id="77_120" className="Pixso-paragraph-77_120">{"AMERICA"}</p>} />
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="stroke-97_160"></div>
-                            </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-                
-            </div>
+                        {/* 윈도우 98 스타일 국가 선택 드롭다운 박스 알맹이 */}
+                        <div style={{
+                            position: "absolute",
+                            top: "25px", /* 버튼 바로 밑 */
+                            left: "0px",
+                            width: "114px",
+                            backgroundColor: "#dddddd",
+                            border: "2px solid",
+                            borderTopColor: "#ffffff",
+                            borderLeftColor: "#ffffff",
+                            borderBottomColor: "#000000",
+                            borderRightColor: "#000000",
+                            padding: "2px",
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "2px",
+                            zIndex: 99999 /* 달력을 덮도록 최상위 부여 */
+                        }}>
+                            {slot_97_161}
+                            {slot_97_162}
+                            {slot_97_163}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
+
 export default Regionmenu;
