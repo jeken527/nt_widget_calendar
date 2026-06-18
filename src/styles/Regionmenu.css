@@ -29,7 +29,7 @@
 }
 
 .Pixso-symbol-97_170 {
-    width: 114px !important; 
+    width: 100% !important; 
     height: auto !important; 
     z-index: 99999 !important; /* 캘린더 화면 위로 덮기 */
     display: block !important;
