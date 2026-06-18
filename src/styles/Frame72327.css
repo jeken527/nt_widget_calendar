@@ -136,14 +136,27 @@
 }
 
 /* 4) 🎯 열린 드롭다운 메뉴판만 콕 집어서 버튼 바로 밑에 공중부양 (레이아웃 간섭 무효화) */
+
+/* ① 버튼과 목록을 모두 품은 껍데기(#97_170)는 절대 뚱뚱해지지 않게 25px로 강제 고정! (아래로 밀림 방지) */
 [class*="Pixso-symbol-97_170"], 
 .Pixso-symbol-97_170,
 [id="97_170"] {
+    position: relative !important; /* 공중부양 해제! 메뉴바 안에서 제자리 유지 */
+    height: 25px !important;
+    max-height: 25px !important;
+    display: block !important;
+    width: 100% !important;
+}
+
+/* ② 진짜 드롭다운 알맹이(#97_160)만 콕 집어서 공중부양! (메뉴 분해 현상 방지) */
+.stroke-wrapper-97_160,
+[id="97_160"] {
     position: absolute !important;
     top: 25px !important; /* REGION 버튼 높이(25px) 바로 아래에 둥둥 뜸 */
     left: 0px !important;
     width: 120px !important; /* 드롭다운 메뉴판 가로폭 고정 */
     z-index: 99999 !important; /* 달력 숫자를 가리고 가장 위층에 나타나도록 설정 */
+    background-color: transparent !important;
 }
 /* ==========================================
    4. 🎯 화살표 <, > 버튼 정사각형 픽셀 강제 교정
