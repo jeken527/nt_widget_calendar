@@ -21,24 +21,25 @@
 }
 
 /* ==========================================
-   2. 위젯 전체 껍데기 사이즈 강제 고정 (피그마 원본 W515 H366)
+   2. 위젯 전체 껍데기 사이즈 강제 고정 
    ========================================== */
 .scroll-container {
-    width: 515px !important;
-    height: 366px !important;
-    margin: 0 auto; /* 위젯 자체는 웹페이지 중앙에 오도록 유지 */
+    width: 530px !important;  /* 그림자가 표시될 수 있도록 여유공간 확보 (515 -> 530) */
+    height: 380px !important; /* 그림자 여유공간 (366 -> 380) */
+    margin: 0 auto; 
     position: relative;
-    overflow: hidden; /* 스크롤바 숨김 */
+    padding-bottom: 10px; /* 아래쪽 그림자 여백 */
+    padding-right: 10px;  /* 오른쪽 그림자 여백 */
+    overflow: visible !important; /* 🎯 핵심: 그림자가 잘리지 않게 허용! */
 }
-
 .stroke-wrapper-72_327 {
     position: relative;
-    width: 515px !important;
+    width: 515px !important; /* 실제 캘린더 본체 크기는 515로 유지 */
     height: 366px !important;
     display: flex;
     flex-shrink: 0;
+    overflow: visible !important;
 }
-
 .Pixso-frame-72_327 {
     width: 100%;
     height: 100%;
@@ -49,8 +50,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    /* 👇 피그마 수치 반영: X:5, Y:5, Blur:2, Spread:0, Color: rgba(0,0,0, 0.7) */
-    box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.7); 
+    box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.7) !important; /* 🎯 그림자 강제 적용 */
     background-color: rgba(221, 221, 221, 1);
 }
 
