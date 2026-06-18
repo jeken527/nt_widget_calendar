@@ -588,10 +588,10 @@ const Frame72327 = () => {
                         {/* 🎯 [수정 3] 검색 결과가 늘어나면 높이도 알아서 쭉쭉 늘어나게 height: "auto"를 줍니다 */}
                         <div className="stroke-wrapper-120_147" style={{ height: "auto", minHeight: "200px" }}>
                             <div className="Pixso-frame-120_147" style={{ justifyContent: "flex-start", height: "auto" }}>
-                                <div className="frame-content-120_147" style={{ alignItems: "stretch", padding: "12px" }}>
+                                <div className="frame-content-120_147" style={{ alignItems: "stretch", padding: "5px" }}>
                                     
-                                    <div id="119_132" className="Pixso-frame-119_132">
-                                        <div className="frame-content-119_132">
+                                    <div id="119_132" className="Pixso-frame-119_132" style={{ width: "100%" }}>
+                                        <div className="frame-content-119_132"style={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
                                             <div id="139_127" className="Pixso-frame-139_127">
                                                 <div className="frame-content-139_127">
                                                     <p id="139_128" className="Pixso-paragraph-139_128" style={{margin: 0}}>{"SEARCH"}</p>
