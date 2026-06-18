@@ -7723,37 +7723,50 @@ align-items: flex-start;
       }
 
 /* =========================================================
-   🎯 [최종 해결] 드롭다운 위치 고정 및 꿀렁임(Bounce) 방지
+   🎯 [최종 대수술] 드롭다운 유령 버튼 투명화 및 위치 절대 고정
    ========================================================= */
 
-/* 1. 컴포넌트 전체 껍데기를 25px로 고정 (메뉴바 레이아웃 밀림 방지) */
-.component-97_172,
-.Pixso-symbol-97_172 {
+/* 1. REGION 버튼 영역 전체 컴포넌트 크기 강제 제어 (레이아웃 무너짐 방지) */
+.Pixso-instance-52_20 {
     position: relative !important;
     width: 78px !important;
     height: 25px !important;
-    margin: 0 !important;
 }
 
-/* 2. False 상태(97_171)와 True 상태(97_170) 껍데기를 한 자리에 겹치기 
-   👉 애니메이션 교차 시 위아래로 쌓이면서 꿀렁거리는 현상 원천 차단! */
-.Pixso-symbol-97_171,
+/* 2. 드롭다운이 열렸을 때 생기는 피그마의 True 상태 전체 큰 박스 (#97_170) */
+#97_170,
 .Pixso-symbol-97_170 {
     position: absolute !important;
     top: 0 !important;
     left: 0 !important;
     width: 78px !important;
     height: 25px !important;
-    margin: 0 !important;
-    overflow: visible !important; /* 드롭다운이 잘리지 않게 허용 */
+    overflow: visible !important; /* 🎯 하위 메뉴가 잘리지 않고 삐져나오도록 허용 */
 }
 
-/* 3. 드롭다운 알맹이(#97_160)만 핀셋으로 집어 공중에 띄운 뒤 버튼 밑으로 내리기 */
-.stroke-wrapper-97_160,
-#97_160 {
+/* 3. True 껍데기 안에 들어있는 피그마의 두 번째 유령 REGION 버튼 (#97_159) 
+   👉 유저님이 보셨던 겹쳐진 중복 버튼을 공중에 absolute로 띄워 투명하게 지워버립니다! */
+#97_159,
+.Pixso-instance-97_159 {
     position: absolute !important;
-    top: 25px !important; /* REGION 버튼 높이(25px) 바로 밑에 매달기 */
+    top: 0 !important;
+    left: 0 !important;
+    opacity: 0 !important; /* 투명인간으로 만들기 */
+    pointer-events: none !important; /* 원래 버튼 클릭을 방해하지 않게 차단 */
+}
+
+/* 4. [가장 중요] 드롭다운 버튼 3개가 묶여있는 진짜 상자 알맹이 (#97_160) 
+   👉 유령 버튼 밑에 공간을 차지하지 않게 absolute로 공중에 띄워 자석처럼 붙입니다. */
+#97_160,
+.Pixso-frame-97_160,
+.stroke-wrapper-97_160 {
+    position: absolute !important;
+    top: 25px !important; /* 🎯 REGION 버튼 높이(25px) 바로 아래에서 시작 */
     left: 0px !important;
-    width: 120px !important;
-    z-index: 99999 !important; /* 캘린더 화면 제일 위쪽으로 띄우기 */
+    width: 114px !important; /* 유저님 피그마 가로폭 수치 반영 */
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+    z-index: 99999 !important; /* 🎯 메인 달력을 덮고 가장 최상단 팝업 레이어로 표시 */
 }
