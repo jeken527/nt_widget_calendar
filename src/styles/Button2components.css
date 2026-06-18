@@ -60,3 +60,9 @@ flex-grow: 0;
 height: fit-content;
       }
 
+/* 🎯 115px 고정값을 파괴하고, 부모 상자에 무조건 맞춤 */
+.Pixso-symbol-77_126, 
+.Pixso-symbol-77_125 {
+    width: 100% !important;
+    box-sizing: border-box !important; /* 내부 패딩까지 포함해서 계산 */
+}
