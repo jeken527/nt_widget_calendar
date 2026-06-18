@@ -53,6 +53,7 @@ const Frame72327 = () => {
     const [eventMemo, setEventMemo] = useState("");
 
     const [viewModalData, setViewModalData] = useState<{ isOpen: boolean; eventId?: string; title: string; isHoliday: boolean }>({ isOpen: false, title: "", isHoliday: false });
+    const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
     
     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
@@ -178,14 +179,15 @@ const Frame72327 = () => {
         } catch (error) {}
     };
 
-    const handleDeleteEvent = async (eventId: string) => {
-        if (!window.confirm("DELETE SCHEDULE?")) return;
-        try {
-            await window.gapi.client.calendar.events.delete({ calendarId: myCalendarId, eventId });
-            setViewModalData({ isOpen: false, title: "", isHoliday: false });
-            fetchCalendarData();
-        } catch (error) {}
-    };
+    const executeDelete = async () => {
+    if (!deleteConfirmId) return; // ID가 없으면 취소
+    try {
+        await window.gapi.client.calendar.events.delete({ calendarId: myCalendarId, eventId: deleteConfirmId });
+        setViewModalData({ isOpen: false, title: "", isHoliday: false });
+        setDeleteConfirmId(null); // 삭제 후 확인 모달 닫기
+        fetchCalendarData();
+    } catch (error) {}
+};
 
     const openAddModal = (dateStr: string) => {
         setEventStartDate(dateStr); setEventEndDate(dateStr); setIsAddModalOpen(true);
@@ -662,10 +664,10 @@ slot_97_163={
                                         visibility: viewModalData.isHoliday ? "hidden" : "visible", 
                                         pointerEvents: viewModalData.isHoliday ? "none" : "auto" 
                                     }}>
-                                        {/* 🎯 DELETE 버튼: 그림자 + B0B0B0 배경색 + 흰색 테두리 */}
-                                        <div className="hover-target hover-shadow-color" onClick={() => { if (!viewModalData.isHoliday && viewModalData.eventId) handleDeleteEvent(viewModalData.eventId); }}>
-                                            <Button1components id="120_141" className="Pixso-instance-120_141" button1state="default" slot_45_10={<p id="14_14" className="Pixso-paragraph-14_14" style={{pointerEvents:"none", margin: 0}}>{"DELETE"}</p>} />
-                                        </div>
+                                        {/* 🎯 DELETE 버튼: 브라우저 팝업 대신 커스텀 모달창 띄우기로 변경! */}
+<div className="hover-target hover-shadow-color" onClick={() => { if (!viewModalData.isHoliday && viewModalData.eventId) setDeleteConfirmId(viewModalData.eventId); }}>
+    <Button1components id="120_141" className="Pixso-instance-120_141" button1state="default" slot_45_10={<p id="14_14" className="Pixso-paragraph-14_14" style={{pointerEvents:"none", margin: 0}}>{"DELETE"}</p>} />
+</div>
                                     </div>
 
                                 </div>
@@ -730,6 +732,31 @@ slot_97_163={
                     </div>
                 </div>
             )}
+            
+            {/* 👇👇👇 여기에 모달 4 (커스텀 삭제 확인 모달)를 붙여넣습니다! 👇👇👇 */}
+            {deleteConfirmId && (
+                <div 
+                    style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "rgba(0,0,0,0.6)", zIndex: 999999, display: "flex", justifyContent: "center", alignItems: "center" }}
+                >
+                    <div className="stroke-wrapper-120_147" style={{ width: "220px", height: "auto", padding: "15px", backgroundColor: "#ddd", display: "flex", flexDirection: "column", gap: "20px" }}>
+                        <div style={{ border: "2px solid", borderTopColor: "#888", borderLeftColor: "#888", borderBottomColor: "#fff", borderRightColor: "#fff", padding: "10px", backgroundColor: "#fff", textAlign: "center" }}>
+                            <p style={{ fontFamily: "Retro Gaming, DungGeunMo, monospace", fontSize: "14px", margin: 0 }}>DELETE SCHEDULE?</p>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "center", gap: "10px" }}>
+                            {/* YES 버튼 */}
+                            <div className="hover-target hover-dark" onClick={executeDelete} style={{ width: "80px" }}>
+                                <Button1components button1state="default" slot_45_10={<p style={{pointerEvents:"none", margin: 0, fontSize: "12px"}}>YES</p>} />
+                            </div>
+                            {/* NO 버튼 */}
+                            <div className="hover-target hover-dark" onClick={() => setDeleteConfirmId(null)} style={{ width: "80px" }}>
+                                <Button1components button1state="default" slot_45_10={<p style={{pointerEvents:"none", margin: 0, fontSize: "12px"}}>NO</p>} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {/* 👆👆👆 여기까지 붙여넣으시면 됩니다 👆👆👆 */}
+            
         </div>
     );
 };
