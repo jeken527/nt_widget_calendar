@@ -313,17 +313,45 @@ const Frame72327 = () => {
                 <div className="Pixso-frame-72_327">
                     <div className="frame-content-72_327">
                         
-                        <div id="45_8" className="Pixso-frame-45_8" onClick={handleLogin} style={{ cursor: "pointer", zIndex: 9999, position: "relative" }}>
-                            <div className="frame-content-45_8">
-                                <div id="129_166" className="Pixso-frame-129_166"><p id="45_7" className="Pixso-paragraph-45_7" style={{ fontFamily: "Retro Gaming, monospace", margin: 0 }}>{isAuthenticated ? "CALENDAR CONNECTED" : "CLICK TO LOGIN"}</p></div>
-                                <div id="8_16" className="Pixso-frame-8_16">
-                                    <div className="frame-content-8_16">
-                                        <div id="8_12" className="stroke-wrapper-8_12"><div className="Pixso-frame-8_12"><div className="frame-content-8_12"><div id="10_34" className="stroke-wrapper-10_34"><div className="Pixso-rectangle-10_34" style={{ backgroundColor: isAuthenticated ? "#00ff00" : "#ff0000" }}></div><div className="stroke-10_34"></div></div></div></div><div className="stroke-8_12"></div></div>
-                                        <div id="8_14" className="stroke-wrapper-8_14"><div className="Pixso-frame-8_14"><div className="frame-content-8_14"><div id="45_5" className="Pixso-vector-45_5"></div></div></div><div className="stroke-8_14"></div></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <div id="45_8" className="Pixso-frame-45_8" style={{ cursor: "pointer", zIndex: 9999, position: "relative" }}>
+    <div className="frame-content-45_8" style={{ display: "flex", justifyContent: "space-between", width: "100%", alignItems: "center" }}>
+        
+        {/* 왼쪽: 타이틀 텍스트와 로그인 상태 램프 */}
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }} onClick={handleLogin}>
+            <div id="129_166" className="Pixso-frame-129_166">
+                <p id="45_7" className="Pixso-paragraph-45_7" style={{ fontFamily: "Retro Gaming, DungGeunMo, monospace", margin: 0, paddingLeft: "4px" }}>
+                    CALENDAR
+                </p>
+            </div>
+            
+            <div id="10_34" className="stroke-wrapper-10_34" style={{ width: "12px", height: "12px", position: "relative", marginLeft: "4px" }}>
+                {/* 🎯 로그인 안됨(회색 #555), 로그인 됨(빨간색 #ff0000) */}
+                <div className="Pixso-rectangle-10_34" style={{ position: "absolute", inset: 0, backgroundColor: isAuthenticated ? "#ff0000" : "#555555" }}></div>
+                <div className="stroke-10_34" style={{ position: "absolute", inset: 0, border: "1px solid #fff", borderTopColor: "#000", borderLeftColor: "#000" }}></div>
+            </div>
+        </div>
+
+        {/* 오른쪽: 윈도우 98 스타일 창 조절 버튼 3형제 (모형) */}
+        <div style={{ display: "flex", gap: "2px" }}>
+            {/* 최소화 버튼 (_) */}
+            <div className="stroke-wrapper-8_14" style={{ width: "16px", height: "14px", position: "relative", backgroundColor: "#ddd", display: "flex", justifyContent: "center", alignItems: "flex-end", paddingBottom: "2px" }}>
+                <div style={{ width: "8px", height: "2px", backgroundColor: "#000" }}></div>
+                <div className="stroke-8_14" style={{ position: "absolute", inset: 0, border: "1px solid #000", borderTopColor: "#fff", borderLeftColor: "#fff" }}></div>
+            </div>
+            {/* 최대화 버튼 (ㅁ) */}
+            <div className="stroke-wrapper-8_14" style={{ width: "16px", height: "14px", position: "relative", backgroundColor: "#ddd", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                <div style={{ width: "8px", height: "6px", border: "1px solid #000", borderTopWidth: "2px" }}></div>
+                <div className="stroke-8_14" style={{ position: "absolute", inset: 0, border: "1px solid #000", borderTopColor: "#fff", borderLeftColor: "#fff" }}></div>
+            </div>
+            {/* 닫기 버튼 (X) */}
+            <div className="stroke-wrapper-8_14" style={{ width: "16px", height: "14px", position: "relative", backgroundColor: "#ddd", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                <div style={{ fontFamily: "Retro Gaming, monospace", fontSize: "10px", fontWeight: "bold", lineHeight: 1, paddingBottom: "1px" }}>x</div>
+                <div className="stroke-8_14" style={{ position: "absolute", inset: 0, border: "1px solid #000", borderTopColor: "#fff", borderLeftColor: "#fff" }}></div>
+            </div>
+        </div>
+
+    </div>
+</div>
 
                         <div id="52_30" className="Pixso-frame-52_30" style={{ position: "relative", zIndex: 9000, overflow: "visible" }}>
                             <div className="frame-content-52_30">
