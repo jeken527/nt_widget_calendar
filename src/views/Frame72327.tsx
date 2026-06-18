@@ -307,11 +307,22 @@ const Frame72327 = () => {
                 }
 
                 /* 🎯 2. 드롭다운용: 배경색(#B0B0B0)만 변경 클래스 */
-                .hover-color:hover > div > [class*="Pixso-symbol"], 
-                .hover-color:hover > [class*="Pixso-symbol"],
-                .hover-color:hover [class*="Pixso-symbol"] { 
-                    background-color: #B0B0B0 !important; 
-                }
+                /* 글자 크기로 쪼그라들지 못하게 너비를 110px(상자 안쪽 크기)로 멱살 잡고 고정! */
+.hover-color {
+    width: 110px !important; 
+}
+.hover-color [class*="Pixso-instance"],
+.hover-color [class*="Pixso-symbol"] {
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* 마우스를 올렸을 때의 호버 색상 변화 */
+.hover-color:hover > div > [class*="Pixso-symbol"], 
+.hover-color:hover > [class*="Pixso-symbol"],
+.hover-color:hover [class*="Pixso-symbol"] { 
+    background-color: #B0B0B0 !important; 
+}
 
                 /* 🎯 3. OK 버튼용: 어두운 배경색(#4B4B4B) + 글자색 흰색 변경 클래스 */
                 .hover-dark:hover > div > [class*="Pixso-symbol"], 
