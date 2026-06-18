@@ -287,24 +287,40 @@ const Frame72327 = () => {
                 .hover-target { display: contents; }
                 .hover-target > * { cursor: pointer !important; pointer-events: auto !important; }
                 
-                /* 🎯 1. 안쪽 그림자 호버 효과 (X 2, Y 2, Blur 1) */
-                .hover-shadow:hover > * {
+                /* 🎯 1. 안쪽 그림자(X 2, Y 2, Blur 1) + 배경색(#B0B0B0) + 우하단 흰색 테두리 동시 적용 클래스 */
+                .hover-shadow-color:hover > * {
                     position: relative;
                 }
-                .hover-shadow:hover > *::after {
+                .hover-shadow-color:hover > *::after {
                     content: "";
                     position: absolute;
                     top: 0; left: 0; right: 0; bottom: 0;
-                    box-shadow: inset 2px 2px 1px 0px rgba(0, 0, 0, 0.6) !important;
-                    pointer-events: none; /* 클릭을 방해하지 않게 통과시킴 */
+                    /* ✨ 마법의 코드: 콤마(,)를 사용해 좌상단 어두운 그림자와 우하단 하얀색 테두리를 동시에 그립니다! */
+                    box-shadow: inset 2px 2px 1px 0px rgba(0, 0, 0, 0.6), inset -1px -1px 0px 0px #FFFFFF !important;
+                    pointer-events: none;
                     z-index: 9999;
                 }
+                .hover-shadow-color:hover > div > [class*="Pixso-symbol"], 
+                .hover-shadow-color:hover > [class*="Pixso-symbol"],
+                .hover-shadow-color:hover [class*="Pixso-symbol"] { 
+                    background-color: #B0B0B0 !important; 
+                }
 
-                /* 🎯 2. 배경색 변경 호버 효과 (#B0B0B0) */
+                /* 🎯 2. 드롭다운용: 배경색(#B0B0B0)만 변경 클래스 */
                 .hover-color:hover > div > [class*="Pixso-symbol"], 
                 .hover-color:hover > [class*="Pixso-symbol"],
                 .hover-color:hover [class*="Pixso-symbol"] { 
                     background-color: #B0B0B0 !important; 
+                }
+
+                /* 🎯 3. OK 버튼용: 어두운 배경색(#4B4B4B) + 글자색 흰색 변경 클래스 */
+                .hover-dark:hover > div > [class*="Pixso-symbol"], 
+                .hover-dark:hover > [class*="Pixso-symbol"],
+                .hover-dark:hover [class*="Pixso-symbol"] { 
+                    background-color: #4B4B4B !important; 
+                }
+                .hover-dark:hover p { 
+                    color: #ffffff !important; 
                 }
 
                 .z-40 { position: relative !important; z-index: 40 !important; }
@@ -334,19 +350,16 @@ const Frame72327 = () => {
                                 </div>
 
                                 <div style={{ display: "flex", gap: "2px" }}>
-                                    {/* 최소화 버튼 (_) */}
-                                    <div className="stroke-wrapper-8_14" style={{ width: "22px", height: "22px", position: "relative", backgroundColor: "#ddd", display: "flex", justifyContent: "center", alignItems: "flex-end" }}>
-                                        <img src="/Line1.svg" alt="minimize" style={{ width: "12px", height: "12px" }} />
+                                    <div className="stroke-wrapper-8_14" style={{ width: "22px", height: "22px", position: "relative", backgroundColor: "#ddd", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                        <img src="/_.svg" alt="minimize" style={{ width: "12px", height: "12px" }} />
                                         <div className="stroke-8_14" style={{ position: "absolute", inset: 0, border: "1px solid #000", borderTopColor: "#fff", borderLeftColor: "#fff" }}></div>
                                     </div>
-                                    {/* 최대화 버튼 (ㅁ) */}
                                     <div className="stroke-wrapper-8_14" style={{ width: "22px", height: "22px", position: "relative", backgroundColor: "#ddd", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                                        <img src="/Rectangle1.svg" alt="maximize" style={{ width: "12px", height: "12px" }} />
+                                        <img src="/Frame7.svg" alt="maximize" style={{ width: "12px", height: "12px" }} />
                                         <div className="stroke-8_14" style={{ position: "absolute", inset: 0, border: "1px solid #000", borderTopColor: "#fff", borderLeftColor: "#fff" }}></div>
                                     </div>
-                                    {/* 닫기 버튼 (X) */}
                                     <div className="stroke-wrapper-8_14" style={{ width: "22px", height: "22px", position: "relative", backgroundColor: "#ddd", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                                        <img src="/Frame7.svg" alt="close" style={{ width: "12px", height: "12px" }} />
+                                        <img src="/Line.svg" alt="close" style={{ width: "12px", height: "12px" }} />
                                         <div className="stroke-8_14" style={{ position: "absolute", inset: 0, border: "1px solid #000", borderTopColor: "#fff", borderLeftColor: "#fff" }}></div>
                                     </div>
                                 </div>
@@ -359,33 +372,33 @@ const Frame72327 = () => {
                             <div className="frame-content-52_30">
                                 <Regionmenu
                                     id="52_20" className="Pixso-instance-52_20 z-40" regionmenu={regionmenu_52_20}
-                                    /* 🎯 REGION 버튼: 안쪽 그림자 */
-                                    slot_97_144={<div className="hover-target hover-shadow" onClick={(e) => { e.stopPropagation(); setRegionmenu_52_20("True"); }}><Button1components className="Pixso-instance-2_188" button1state="default" slot_45_10={<p id="2_189" className="Pixso-paragraph-2_189" style={{pointerEvents:"none", margin: 0}}>{"REGION"}</p>} /></div>}
-                                    slot_97_159={<div className="hover-target hover-shadow" onClick={(e) => { e.stopPropagation(); setRegionmenu_52_20("False"); }}><Button1components className="Pixso-instance-2_188" button1state="default" slot_45_10={<p id="2_189_exp" className="Pixso-paragraph-2_189" style={{pointerEvents:"none", margin: 0}}>{"REGION"}</p>} /></div>}
+                                    /* 🎯 그림자 + B0B0B0 배경색 + 흰색 테두리 */
+                                    slot_97_144={<div className="hover-target hover-shadow-color" onClick={(e) => { e.stopPropagation(); setRegionmenu_52_20("True"); }}><Button1components className="Pixso-instance-2_188" button1state="default" slot_45_10={<p id="2_189" className="Pixso-paragraph-2_189" style={{pointerEvents:"none", margin: 0}}>{"REGION"}</p>} /></div>}
+                                    slot_97_159={<div className="hover-target hover-shadow-color" onClick={(e) => { e.stopPropagation(); setRegionmenu_52_20("False"); }}><Button1components className="Pixso-instance-2_188" button1state="default" slot_45_10={<p id="2_189_exp" className="Pixso-paragraph-2_189" style={{pointerEvents:"none", margin: 0}}>{"REGION"}</p>} /></div>}
                                     
-                                    /* 🎯 드롭다운 메뉴 (KR, JP, US): 배경색 회색 */
+                                    /* 드롭다운 하위 메뉴는 배경색만 처리 */
                                     slot_97_161={<div className="hover-target hover-color" onClick={(e) => { e.stopPropagation(); setSelectedRegion("KR"); setRegionmenu_52_20("False"); }}><Button2components className="Pixso-instance-97_161" button2state="default" slot_77_120={<p id="77_120_kr" className="Pixso-paragraph-77_120" style={{pointerEvents:"none", margin: 0}}>{"KOREA"}</p>} /></div>}
                                     slot_97_162={<div className="hover-target hover-color" onClick={(e) => { e.stopPropagation(); setSelectedRegion("JP"); setRegionmenu_52_20("False"); }}><Button2components className="Pixso-instance-97_162" button2state="default" slot_77_120={<p id="77_120_jp" className="Pixso-paragraph-77_120" style={{pointerEvents:"none", margin: 0}}>{"JAPAN"}</p>} /></div>}
                                     slot_97_163={<div className="hover-target hover-color" onClick={(e) => { e.stopPropagation(); setSelectedRegion("US"); setRegionmenu_52_20("False"); }}><Button2components className="Pixso-instance-97_163" button2state="default" slot_77_120={<p id="77_120_us" className="Pixso-paragraph-77_120" style={{pointerEvents:"none", margin: 0}}>{"AMERICA"}</p>} /></div>}
                                 />
                                 <Editmenu
                                     id="52_23" className="Pixso-instance-52_23 z-30" editmenu="False"
-                                    /* 🎯 EDIT 버튼: 안쪽 그림자 */
+                                    /* 🎯 그림자 + B0B0B0 배경색 + 흰색 테두리 */
                                     slot_107_320={
-                                        <div className="hover-target hover-shadow" onClick={() => openAddModal(getLocalDateStr(new Date()))}>
+                                        <div className="hover-target hover-shadow-color" onClick={() => openAddModal(getLocalDateStr(new Date()))}>
                                             <Button1components className="Pixso-instance-2_170" button1state="default" slot_45_10={<p id="2_171" className="Pixso-paragraph-2_171" style={{pointerEvents:"none", margin: 0}}>{"EDIT"}</p>} />
                                         </div>
                                     }
                                 />
                                 <Searchmenu 
                                     id="52_26" className="Pixso-instance-52_26 z-20" searchmenu="False" 
-                                    /* 🎯 SEARCH 버튼: 안쪽 그림자 */
-                                    slot_107_367={<div className="hover-target hover-shadow" onClick={() => setIsSearchModalOpen(true)}><Button1components className="Pixso-instance-2_176" button1state="default" slot_45_10={<p id="2_177" className="Pixso-paragraph-2_177" style={{pointerEvents:"none", margin: 0}}>{"SEARCH"}</p>} /></div>} 
+                                    /* 🎯 그림자 + B0B0B0 배경색 + 흰색 테두리 */
+                                    slot_107_367={<div className="hover-target hover-shadow-color" onClick={() => setIsSearchModalOpen(true)}><Button1components className="Pixso-instance-2_176" button1state="default" slot_45_10={<p id="2_177" className="Pixso-paragraph-2_177" style={{pointerEvents:"none", margin: 0}}>{"SEARCH"}</p>} /></div>} 
                                 />
                                 <Resetbutton 
                                     id="52_28" className="Pixso-instance-52_28 z-10" resetmenu="default" 
-                                    /* 🎯 RESET 버튼: 안쪽 그림자 */
-                                    slot_143_265={<div className="hover-target hover-shadow" onClick={() => { 
+                                    /* 🎯 그림자 + B0B0B0 배경색 + 흰색 테두리 */
+                                    slot_143_265={<div className="hover-target hover-shadow-color" onClick={() => { 
                                         const now = new Date();
                                         setRightDate(new Date(now.getFullYear(), now.getMonth() + 1, 1)); 
                                         setSelectedRegion("KR"); 
@@ -437,8 +450,8 @@ const Frame72327 = () => {
                                         <div className="frame-content-68_321">
                                             <div id="66_320" className="Pixso-frame-66_320">
                                                 <div className="frame-content-66_320">
-                                                    {/* 🎯 이전 달로 이동 버튼: 안쪽 그림자 */}
-                                                    <div className="hover-target hover-shadow" onClick={() => setRightDate(new Date(rightDate.getFullYear(), rightDate.getMonth() - 1, 1))}>
+                                                    {/* 🎯 이전 달로 이동 버튼: 그림자 + B0B0B0 배경색 + 흰색 테두리 */}
+                                                    <div className="hover-target hover-shadow-color" onClick={() => setRightDate(new Date(rightDate.getFullYear(), rightDate.getMonth() - 1, 1))}>
                                                         <Button1components className="Pixso-instance-58_13" button1state="default" slot_45_10={<p id="2_44" className="Pixso-paragraph-2_44" style={{pointerEvents:"none", margin: 0}}>{"<"}</p>} />
                                                     </div>
                                                     <div id="66_208" className="Pixso-frame-66_208">
@@ -447,8 +460,8 @@ const Frame72327 = () => {
                                                             <div id="66_211" className="Pixso-frame-66_211"><div className="frame-content-66_211"><p id="66_212" className="Pixso-paragraph-66_212" style={{fontFamily:"Retro Gaming, monospace", margin: 0}}>{String(rightDate.getMonth() + 1).padStart(2, '0')}</p></div></div>
                                                         </div>
                                                     </div>
-                                                    {/* 🎯 다음 달로 이동 버튼: 안쪽 그림자 */}
-                                                    <div className="hover-target hover-shadow" onClick={() => setRightDate(new Date(rightDate.getFullYear(), rightDate.getMonth() + 1, 1))}>
+                                                    {/* 🎯 다음 달로 이동 버튼: 그림자 + B0B0B0 배경색 + 흰색 테두리 */}
+                                                    <div className="hover-target hover-shadow-color" onClick={() => setRightDate(new Date(rightDate.getFullYear(), rightDate.getMonth() + 1, 1))}>
                                                         <Button1components className="Pixso-instance-129_172" button1state="default" slot_45_10={<p id="2_40" className="Pixso-paragraph-2_40" style={{pointerEvents:"none", margin: 0}}>{">"}</p>} />
                                                     </div>
                                                 </div>
@@ -501,8 +514,8 @@ const Frame72327 = () => {
                                                     <p id="107_416" className="Pixso-paragraph-107_416" style={{margin: 0}}>{"Title"}</p>
                                                 </div>
                                             </div>
-                                            {/* 🎯 일정 추가 팝업의 OK 버튼: 배경색 #B0B0B0 변경 */}
-                                            <div className="hover-target hover-color" onClick={handleSaveEvent} style={{ width: "auto" }}>
+                                            {/* 🎯 일정 추가 팝업의 OK 버튼: 어두운 회색(#4B4B4B) + 글자 흰색 변경 */}
+                                            <div className="hover-target hover-dark" onClick={handleSaveEvent} style={{ width: "auto" }}>
                                                 <Button1components className="Pixso-instance-107_429" button1state="default" slot_45_10={<p id="13_6" className="Pixso-paragraph-13_6" style={{pointerEvents:"none", margin: 0}}>{"OK"}</p>} />
                                             </div>
                                         </div>
@@ -577,8 +590,8 @@ const Frame72327 = () => {
                                                     <p id="139_128" className="Pixso-paragraph-139_128" style={{margin: 0}}>{"SCHEDULE"}</p>
                                                 </div>
                                             </div>
-                                            {/* 🎯 스케줄 안내 팝업의 닫기 [X] 버튼: 안쪽 그림자 */}
-                                            <div className="hover-target hover-shadow" onClick={() => setViewModalData({ isOpen: false, title: "", isHoliday: false })}>
+                                            {/* 🎯 스케줄 안내 팝업의 닫기 [X] 버튼: 그림자 + B0B0B0 배경색 + 흰색 테두리 */}
+                                            <div className="hover-target hover-shadow-color" onClick={() => setViewModalData({ isOpen: false, title: "", isHoliday: false })}>
                                                 <Button3components id="135_159" className="Pixso-instance-135_159" button3state="default" />
                                             </div>
                                         </div>
@@ -602,8 +615,8 @@ const Frame72327 = () => {
                                         visibility: viewModalData.isHoliday ? "hidden" : "visible", 
                                         pointerEvents: viewModalData.isHoliday ? "none" : "auto" 
                                     }}>
-                                        {/* 🎯 DELETE 버튼: 안쪽 그림자 */}
-                                        <div className="hover-target hover-shadow" onClick={() => { if (!viewModalData.isHoliday && viewModalData.eventId) handleDeleteEvent(viewModalData.eventId); }}>
+                                        {/* 🎯 DELETE 버튼: 그림자 + B0B0B0 배경색 + 흰색 테두리 */}
+                                        <div className="hover-target hover-shadow-color" onClick={() => { if (!viewModalData.isHoliday && viewModalData.eventId) handleDeleteEvent(viewModalData.eventId); }}>
                                             <Button1components id="120_141" className="Pixso-instance-120_141" button1state="default" slot_45_10={<p id="14_14" className="Pixso-paragraph-14_14" style={{pointerEvents:"none", margin: 0}}>{"DELETE"}</p>} />
                                         </div>
                                     </div>
@@ -634,8 +647,8 @@ const Frame72327 = () => {
                                                     <p id="139_128" className="Pixso-paragraph-139_128" style={{ margin: 0, textAlign: "left", width: "auto" }}>{"SEARCH"}</p>
                                                 </div>
                                             </div>
-                                            {/* 🎯 검색 모달창의 닫기 [X] 버튼: 안쪽 그림자 */}
-                                            <div className="hover-target hover-shadow" onClick={() => setIsSearchModalOpen(false)}>
+                                            {/* 🎯 검색 모달창의 닫기 [X] 버튼: 그림자 + B0B0B0 배경색 + 흰색 테두리 */}
+                                            <div className="hover-target hover-shadow-color" onClick={() => setIsSearchModalOpen(false)}>
                                                 <Button3components id="135_159" className="Pixso-instance-135_159" button3state="default" />
                                             </div>
                                         </div>
