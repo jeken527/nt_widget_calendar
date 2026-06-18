@@ -362,7 +362,7 @@ const Frame72327 = () => {
                                 </div>
 
                                 <div style={{ display: "flex", gap: "2px" }}>
-                                    <div className="stroke-wrapper-8_14" style={{ width: "22px", height: "22px", position: "relative", backgroundColor: "#ddd", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                    <div className="stroke-wrapper-8_14" style={{ width: "22px", height: "22px", position: "relative", backgroundColor: "#ddd", display: "flex", justifyContent: "center", alignItems: "flex-end" }}>
                                         <img src="/Line1.svg" alt="minimize" style={{ width: "12px", height: "12px" }} />
                                         <div className="stroke-8_14" style={{ position: "absolute", inset: 0, border: "1px solid #000", borderTopColor: "#fff", borderLeftColor: "#fff" }}></div>
                                     </div>
