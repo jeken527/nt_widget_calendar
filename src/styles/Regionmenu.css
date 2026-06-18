@@ -94,29 +94,3 @@
 .Pixso-instance-97_161 .Pixso-symbol-77_126, .Pixso-instance-97_162 .Pixso-symbol-77_126, .Pixso-instance-97_163 .Pixso-symbol-77_126 {
     width: 114px; height: 25px; position: relative; flex-shrink: 0; display: flex; flex-direction: row; align-items: center; padding: 0px 5px;
 }
-
-/* =========================================================
-   🎯 핀셋 수정: 버튼 흩어짐 방지 & 드롭다운 팝업 위치 고정
-   ========================================================= */
-
-/* 1) 열린 상태의 껍데기(#97_170): 
-      절대 위치로 날아가지 않게(relative) 잡고, 높이를 25px로 묶어서 레이아웃 밀림 방지 */
-#97_170 {
-    position: relative !important; 
-    height: 25px !important;
-    max-height: 25px !important;
-    width: 78px !important;
-    display: block !important;
-}
-
-/* 2) 드롭다운 목록 알맹이(#97_160): 
-      이 녀석만 공중(absolute)으로 띄워서 REGION 버튼 바로 아래(top: 25px)에 고정 */
-#97_160,
-.stroke-wrapper-97_160 {
-    position: absolute !important;
-    top: 25px !important; 
-    left: 0px !important;
-    width: 120px !important;
-    height: auto !important;
-    z-index: 99999 !important; /* 캘린더 위에 보이도록 */
-}
