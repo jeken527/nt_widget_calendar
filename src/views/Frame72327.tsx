@@ -22,7 +22,8 @@ declare global {
     }
 }
 
-const CLIENT_ID = "930243544712-7j81q7c4d7885v43u1nqlmgbdtf85oat.apps.googleusercontent.com";
+const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+const API_KEY = import.meta.env.VITE_GOOGLE_CALENDAR_API_KEY;
 const SCOPES = "https://www.googleapis.com/auth/calendar";
 
 const HOLIDAY_CALENDARS: Record<string, string> = {
