@@ -138,8 +138,11 @@ const Frame72327 = () => {
             const targetId = targetCal ? targetCal.id : "primary";
             setMyCalendarId(targetId);
 
-            const timeMin = new Date(leftDate.getFullYear(), leftDate.getMonth(), 1).toISOString();
-            const timeMax = new Date(rightDate.getFullYear(), rightDate.getMonth() + 4, 0).toISOString();
+            const minDate = leftDate < rightDate ? leftDate : rightDate;
+            const maxDate = leftDate > rightDate ? leftDate : rightDate;
+            
+            const timeMin = new Date(minDate.getFullYear(), minDate.getMonth() - 1, 1).toISOString();
+            const timeMax = new Date(maxDate.getFullYear(), maxDate.getMonth() + 4, 0).toISOString();
             
             const holidayResp = await window.gapi.client.calendar.events.list({
                 calendarId: HOLIDAY_CALENDARS[selectedRegion], timeMin, timeMax, singleEvents: true,
